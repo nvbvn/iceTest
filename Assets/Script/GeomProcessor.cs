@@ -25,9 +25,15 @@ public class GeomProcessor {
         int edgeN;
         Vector3 Anew;
         int n = 0;
+
+        List<int> st = new List<int>();
         do {
             processTriangle(startTriangle, startPoint, out edgeN, out Anew);
+            if (res[res.Count-1] == Anew) {
+                Debug.Log("");
+            }
             res.Add(Anew);
+            st.Add(startTriangle);
             if (edgeN == -1) {
                 Debug.LogError("DeadEnd");
                 break;
@@ -36,14 +42,14 @@ public class GeomProcessor {
             startPoint = Anew;
 
             n++;
-            if (n>1000) {
+            if (n>100) {
                 break;
             }
         } while (_vertices[_triangles[3*startTriangle]].y > minY && _vertices[_triangles[3 * startTriangle+1]].y > minY && _vertices[_triangles[3 * startTriangle+2]].y > minY);
         return res;
     }
 
-    private void processTriangle(int triN, Vector3 A, out int edgeN, out Vector3 Anew) {
+    public void processTriangle(int triN, Vector3 A, out int edgeN, out Vector3 Anew) {
         Vector3 V01 = _vertices[_triangles[triN * 3 + 1]] - _vertices[_triangles[triN * 3 + 0]];
         Vector3 V02 = _vertices[_triangles[triN * 3 + 2]] - _vertices[_triangles[triN * 3 + 0]];
         Vector3 v0 = _vertices[_triangles[triN * 3 + 0]];
@@ -93,7 +99,7 @@ public class GeomProcessor {
         float d = Vector3.Dot(Nsp, V);
         float e = Vector3.Dot(Nsp, W);
         float k = d / e;
-        if (k>0 && k<1 ) {
+        if (k>=0 && k<1 ) {
             res = T1 + k * W;
         }
         return res;

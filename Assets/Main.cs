@@ -62,8 +62,10 @@ public class Main : MonoBehaviour {
         //        Vector3 v = default(Vector3);
 
         Debug.Log(DateTime.Now.ToString());
-        _trilinks = GeomPreprocessor.CreateTrilinks(cap1.mesh);
-      //  String str = String.Join(",", _trilinks);
+        //  _trilinks = GeomPreprocessor.CreateTrilinks(cap1.mesh);
+        //  String str = String.Join(",", _trilinks);
+        TextAsset txt = Resources.Load("Trilinks/capsule") as TextAsset;
+        _trilinks = Array.ConvertAll(txt.text.Split(','), int.Parse);
         Debug.Log(DateTime.Now.ToLongTimeString()+","+_trilinks.ToString());
 
         _vertices = cap1.mesh.vertices;
@@ -81,6 +83,23 @@ public class Main : MonoBehaviour {
         for (i=0; i<cubes.Count; i++) {
             cubes[i].GetComponent<Renderer>().enabled = false;
         }
+
+  /*      Vector3 A = new Vector3(6.37312E-08f, -0.7039801f, -0.4557033f);
+        int triN = 415;
+        Vector3 Anew;
+        int edgeN;
+        _testGeomProcessor.processTriangle(triN, A, out edgeN, out Anew);
+
+
+        Vector3 V01 = _vertices[_triangles[triN * 3 + 1]] - _vertices[_triangles[triN * 3 + 0]];
+        Vector3 V02 = _vertices[_triangles[triN * 3 + 2]] - _vertices[_triangles[triN * 3 + 0]];
+        Vector3 v0 = _vertices[_triangles[triN * 3 + 0]];
+        Vector3 v1 = _vertices[_triangles[triN * 3 + 1]];
+        Vector3 v2 = _vertices[_triangles[triN * 3 + 2]];
+
+        Vector3 n = Vector3.Cross(V01, V02);
+        Debug.DrawRay(A, n);
+        return;*/
 
 		RaycastHit hit;
         
