@@ -26,18 +26,51 @@ public class GeomProcessor {
         Vector3 Anew;
         int n = 0;
 
-        List<int> st = new List<int>();
+        //List<int> st = new List<int>();
+        int triN;
+        bool temp = false;
         do {
             processTriangle(startTriangle, startPoint, out edgeN, out Anew);
             if (res[res.Count-1] == Anew) {
-                Debug.Log("");
+                triN = 3 * startTriangle;
+                int vN;
+                if (edgeN == 0) {
+                    vN = getLowestN(_vertices[_triangles[triN + 1]], _vertices[_triangles[triN]]);
+                    if (vN == 1) {
+                        Anew = _vertices[_triangles[triN + 1]];
+                        edgeN = 1;
+                    } else {
+                        Anew = _vertices[_triangles[triN]];
+                        edgeN = 2;
+                    }
+                } else if (edgeN == 1) {
+                    vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN + 1]]);
+                    if (vN == 1) {
+                        Anew = _vertices[_triangles[triN + 2]];
+                        edgeN = 2;
+                    } else {
+                        Anew = _vertices[_triangles[triN + 1]];
+                        edgeN = 0;
+                    }
+                }  else if (edgeN == 2) {
+                    vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN]]);
+                    if (vN == 1) {
+                        Anew = _vertices[_triangles[triN + 2]];
+                        edgeN = 1;
+                    } else {
+                        Anew = _vertices[_triangles[triN]];
+                        edgeN = 0;
+                    }
+                }
+                temp = true;
             }
             res.Add(Anew);
-            st.Add(startTriangle);
-            if (edgeN == -1) {
+            
+        //   st.Add(startTriangle);
+            /*if (edgeN == -1) {
                 Debug.LogError("DeadEnd");
                 break;
-            }
+            }*/
             startTriangle = _trilinks[3 * startTriangle + edgeN];
             startPoint = Anew;
 
@@ -45,10 +78,28 @@ public class GeomProcessor {
             if (n>100) {
                 break;
             }
-        } while (_vertices[_triangles[3*startTriangle]].y > minY && _vertices[_triangles[3 * startTriangle+1]].y > minY && _vertices[_triangles[3 * startTriangle+2]].y > minY);
+            triN = 3 * startTriangle;
+            
+        } while (_vertices[_triangles[triN]].y >= minY && _vertices[_triangles[triN + 1]].y >= minY && _vertices[_triangles[triN + 2]].y >= minY && !temp);
+        Vector3 q = _vertices[_triangles[triN]];
+            Vector3 qq = _vertices[_triangles[triN+1]];
+            Vector3 qqq = _vertices[_triangles[triN+2]];
+        bool b = qqq.y >= minY;
+        bool bb = qqq.y == minY;
+        bool bbb = qqq.y > minY;
+        bool bbbb = -0.3f == -0.3f;
+        float aa = qqq.y;
+        float bnm = aa - minY;
         return res;
     }
 
+    private int getLowestN(Vector3 V1, Vector3 V0) {
+        int res = 1;
+        if (V0.y < V1.y) {
+            res = 2;
+        }
+        return res;
+    }
     public void processTriangle(int triN, Vector3 A, out int edgeN, out Vector3 Anew) {
         Vector3 V01 = _vertices[_triangles[triN * 3 + 1]] - _vertices[_triangles[triN * 3 + 0]];
         Vector3 V02 = _vertices[_triangles[triN * 3 + 2]] - _vertices[_triangles[triN * 3 + 0]];
@@ -63,7 +114,7 @@ public class GeomProcessor {
         Vector3 N = n.normalized;
         Vector3 X = A + k * N;
         Vector3 P = X - (Vector3.Dot(Np, X) + D) * Np;
-        Debug.DrawLine(X, P, new Color(0, 0, 1));
+        //Debug.DrawLine(X, P, new Color(0, 0, 1));
 
         int edgeIndex = 0;
         Vector3 I0 = edgeIntersect(P, A, X, v1, v0);
@@ -93,13 +144,13 @@ public class GeomProcessor {
         Vector3 NSP = Vector3.Cross(b, a);
         NSP.Normalize();
         Vector3 Nsp = NSP;
-        Debug.DrawLine(A, A+Nsp, new Color(0.5f, 0.5f, 0));
+        //Debug.DrawLine(A, A+Nsp, new Color(0.5f, 0.5f, 0));
         Vector3 V = A - T1;
         Vector3 W = T2 - T1;
         float d = Vector3.Dot(Nsp, V);
         float e = Vector3.Dot(Nsp, W);
         float k = d / e;
-        if (k>=0 && k<1 ) {
+        if (k>=0 && k<=1 ) {
             res = T1 + k * W;
         }
         return res;
