@@ -31,7 +31,7 @@ public class GeomProcessor {
         bool temp = false;
         do {
             processTriangle(startTriangle, startPoint, out edgeN, out Anew);
-            if (res[res.Count-1] == Anew) {
+            if (res[res.Count - 1] == Anew) {
                 triN = 3 * startTriangle;
                 int vN;
                 if (edgeN == 0) {
@@ -52,7 +52,7 @@ public class GeomProcessor {
                         Anew = _vertices[_triangles[triN + 1]];
                         edgeN = 0;
                     }
-                }  else if (edgeN == 2) {
+                } else if (edgeN == 2) {
                     vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN]]);
                     if (vN == 1) {
                         Anew = _vertices[_triangles[triN + 2]];
@@ -62,34 +62,27 @@ public class GeomProcessor {
                         edgeN = 0;
                     }
                 }
-                temp = true;
+          //      temp = true;
             }
             res.Add(Anew);
-            
-        //   st.Add(startTriangle);
+
+            //   st.Add(startTriangle);
             /*if (edgeN == -1) {
                 Debug.LogError("DeadEnd");
                 break;
             }*/
             startTriangle = _trilinks[3 * startTriangle + edgeN];
+            if (startTriangle == -1) {
+                break;
+            }
             startPoint = Anew;
 
             n++;
-            if (n>100) {
+            if (n > 100) {
                 break;
             }
             triN = 3 * startTriangle;
-            
-        } while (_vertices[_triangles[triN]].y >= minY && _vertices[_triangles[triN + 1]].y >= minY && _vertices[_triangles[triN + 2]].y >= minY && !temp);
-        Vector3 q = _vertices[_triangles[triN]];
-            Vector3 qq = _vertices[_triangles[triN+1]];
-            Vector3 qqq = _vertices[_triangles[triN+2]];
-        bool b = qqq.y >= minY;
-        bool bb = qqq.y == minY;
-        bool bbb = qqq.y > minY;
-        bool bbbb = -0.3f == -0.3f;
-        float aa = qqq.y;
-        float bnm = aa - minY;
+        } while (MathUtil.ApproximatelyLessThanOrEqual(minY, _vertices[_triangles[triN]].y) && MathUtil.ApproximatelyLessThanOrEqual(minY, _vertices[_triangles[triN + 1]].y) && MathUtil.ApproximatelyLessThanOrEqual(minY, _vertices[_triangles[triN + 2]].y) && !temp);
         return res;
     }
 

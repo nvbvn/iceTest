@@ -18,11 +18,10 @@ public class GeomPreprocessor {
             int t3 = findTrisIndex(tris, verts, tris[i3], tris[i3 + 2], i);
             if (t1 == -1 || t2 == -1 || t3 == -1) {
                 Debug.LogError("Triangle without link");
-            } else {
-                res[i3] = t1;
-                res[i3 + 1] = t2;
-                res[i3 + 2] = t3;
             }
+            res[i3] = t1;
+            res[i3 + 1] = t2;
+            res[i3 + 2] = t3;
         }
         return res;
     }

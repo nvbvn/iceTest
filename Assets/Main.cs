@@ -41,9 +41,9 @@ public class Main : MonoBehaviour {
 
     void Start () {
         Application.targetFrameRate = 60;
- /*      _trilinks = GeomPreprocessor.CreateTrilinks(testIce.mesh);
-        String str = String.Join(",", _trilinks);
-        */
+ //      _trilinks = GeomPreprocessor.CreateTrilinks(testIce.mesh);
+ //       String str = String.Join(",", _trilinks);
+        
         Debug.Log(DateTime.Now.ToString());
         TextAsset txt = Resources.Load("Trilinks/capsule") as TextAsset;
         _trilinks = Array.ConvertAll(txt.text.Split(','), int.Parse);
@@ -90,17 +90,17 @@ public class Main : MonoBehaviour {
         Debug.DrawRay(A, n);
         return;*/
 
-/*		RaycastHit hit;
+        List<Vector3> points;
+
+ /*   	RaycastHit hit;
         
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
-        //cube.transform.SetPositionAndRotation(hit.point, cube.transform.rotation);
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
-*/
-        List<Vector3> points;
- /*       if (meshCollider == cap1.GetComponent<MeshCollider>()) {
+
+        if (meshCollider == cap1.GetComponent<MeshCollider>()) {
             points = _testGeomProcessor.GetEdgeIntersectPoints(cap1.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         } else if (meshCollider == doubleSphere.GetComponent<MeshCollider>()) {
             points = _testGeomProcessor_doubleSphere.GetEdgeIntersectPoints(doubleSphere.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
@@ -110,8 +110,8 @@ public class Main : MonoBehaviour {
             points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         }*/
         MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
-        points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.9387397f, 0.2123341f, -0.4843389f)), 232);
-
+        points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
+        
         Transform cb;
         while (points.Count > cubes.Count) {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
