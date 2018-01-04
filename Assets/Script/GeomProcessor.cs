@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,9 +29,11 @@ public class GeomProcessor {
 
         //List<int> st = new List<int>();
         int triN;
+        int edgeToPreviousTris = -1;
+        int previousTris;
         bool temp = false;
         do {
-            processTriangle(startTriangle, startPoint, out edgeN, out Anew);
+            processTriangle(startTriangle, startPoint, out edgeN, out Anew, edgeToPreviousTris);
             if (res[res.Count - 1] == Anew) {
                 triN = 3 * startTriangle;
                 int vN;
@@ -66,14 +69,18 @@ public class GeomProcessor {
             }
             res.Add(Anew);
 
-            //   st.Add(startTriangle);
-            /*if (edgeN == -1) {
-                Debug.LogError("DeadEnd");
-                break;
-            }*/
+            previousTris = startTriangle;
             startTriangle = _trilinks[3 * startTriangle + edgeN];
+
             if (startTriangle == -1) {
                 break;
+            }
+
+            triN = 3 * startTriangle;
+            for (edgeToPreviousTris = 0; edgeToPreviousTris<3; edgeToPreviousTris++) {
+                if (_trilinks[triN + edgeToPreviousTris] == previousTris) {
+                    break;
+                }
             }
             startPoint = Anew;
 
@@ -93,7 +100,26 @@ public class GeomProcessor {
         }
         return res;
     }
-    public void processTriangle(int triN, Vector3 A, out int edgeN, out Vector3 Anew) {
+
+
+
+    private struct VertexN {
+        public Vector3 Vertex;
+        public int N;
+        public VertexN(Vector3 vertex, int n) { Vertex = vertex; N = n; }
+    }
+    private VertexN[] _verts = {new VertexN(new Vector3(), -1), new VertexN(new Vector3(), -1), new VertexN(new Vector3(), -1) };
+    private int vertsComparer(VertexN a, VertexN b) {
+        int res = 1;
+        if (Mathf.Approximately(a.Vertex.y, b.Vertex.y)) {
+            res = 0;
+        } else if (a.Vertex.y < b.Vertex.y) {
+            res = -1;
+        }
+        return res;
+    }
+
+    public void processTriangle(int triN, Vector3 A, out int edgeN, out Vector3 Anew, int edgeToPreviousTriangle = -1) {
         Vector3 V01 = _vertices[_triangles[triN * 3 + 1]] - _vertices[_triangles[triN * 3 + 0]];
         Vector3 V02 = _vertices[_triangles[triN * 3 + 2]] - _vertices[_triangles[triN * 3 + 0]];
         Vector3 v0 = _vertices[_triangles[triN * 3 + 0]];
@@ -114,7 +140,22 @@ public class GeomProcessor {
         Vector3 I1 = edgeIntersect(P, A, X, v1, v2);
         Vector3 I2 = edgeIntersect(P, A, X, v2, v0);
 
-        Vector3 I = I0;
+        Vector3 I;
+
+        _verts[0].Vertex = I0; _verts[0].N = 0;
+        _verts[1].Vertex = I1; _verts[1].N = 1;
+        _verts[2].Vertex = I2; _verts[2].N = 2;
+        Array.Sort(_verts, vertsComparer);
+
+        if (_verts[0].N != edgeToPreviousTriangle) {
+            edgeIndex = _verts[0].N;
+            I = _verts[0].Vertex;
+        } else {
+            edgeIndex = _verts[1].N;
+            I = _verts[1].Vertex;
+        }
+
+ /*       I = I0;
         if (I1.y < I.y) {
             I = I1;
             edgeIndex = 1;
@@ -122,7 +163,7 @@ public class GeomProcessor {
         if (I2.y < I.y) {
             I = I2;
             edgeIndex = 2;
-        }
+        }*/
       /*  if (I == A) {
             Debug.Log("upsss");
         }*/
