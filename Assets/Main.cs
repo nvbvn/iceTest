@@ -57,11 +57,27 @@ public class Main : MonoBehaviour {
         _vertices = cap1.mesh.vertices;
         _triangles = cap1.mesh.triangles;
 
-        _testGeomProcessor = new GeomProcessor(cap1.mesh, _trilinks);
-        _testGeomProcessor_doubleSphere = new GeomProcessor(doubleSphere.mesh, _trilinks_doubleSphere);
-        _testGeomProcessor_doubleSphere_tri = new GeomProcessor(doubleSphere_tri.mesh, _trilinks_doubleSphere_tri);
-        _testGeomProcessor_testIce = new GeomProcessor(testIce.mesh, _trilinks_testIce);
+        _testGeomProcessor = new GeomProcessor(cap1.mesh, _trilinks, cap1.transform);
+        _testGeomProcessor_doubleSphere = new GeomProcessor(doubleSphere.mesh, _trilinks_doubleSphere, doubleSphere.transform);
+        _testGeomProcessor_doubleSphere_tri = new GeomProcessor(doubleSphere_tri.mesh, _trilinks_doubleSphere_tri, doubleSphere_tri.transform);
+        _testGeomProcessor_testIce = new GeomProcessor(testIce.mesh, _trilinks_testIce, testIce.transform);
         Debug.Log("???");
+
+  /*      Transform cb;
+            cb = Instantiate(cube, new Vector3(), Quaternion.identity);
+            cb.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+            cb.SetParent(testIce.transform);
+            cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3*120]];
+
+        cb = Instantiate(cube, new Vector3(), Quaternion.identity);
+        cb.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+        cb.SetParent(testIce.transform);
+        cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3 * 120+1]];
+
+        cb = Instantiate(cube, new Vector3(), Quaternion.identity);
+        cb.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+        cb.SetParent(testIce.transform);
+        cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3 * 120+2]];*/
     }
 
 

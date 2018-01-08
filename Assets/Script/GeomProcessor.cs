@@ -8,12 +8,14 @@ public class GeomProcessor {
     private readonly float D = 1.5f;
 
     private Mesh _mesh;
+    private Transform _transform;
     private int[] _trilinks;
     private Vector3[] _vertices;
     private int[] _triangles;
 
-    public GeomProcessor(Mesh mesh, int[] trilinks) {
+    public GeomProcessor(Mesh mesh, int[] trilinks, Transform transform) {
         _mesh = mesh;
+        _transform = transform;
         _trilinks = trilinks;
         _vertices = mesh.vertices;
         _triangles = mesh.triangles;
@@ -42,18 +44,22 @@ public class GeomProcessor {
                     if (vN == 1) {
                         Anew = _vertices[_triangles[triN + 1]];
                         edgeN = 1;
+                        Debug.DrawLine(_transform.TransformPoint( _vertices[_triangles[triN+1]]), _transform.TransformPoint(_vertices[_triangles[triN + 2]]), new Color(1, 0, 0));
                     } else {
                         Anew = _vertices[_triangles[triN]];
                         edgeN = 2;
+                        Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN + 2]]), new Color(0.5f, 0, 0));
                     }
                 } else if (edgeN == 1) {
                     vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN + 1]]);
                     if (vN == 1) {
                         Anew = _vertices[_triangles[triN + 2]];
                         edgeN = 2;
+                        Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN + 2]]), new Color(0, 1, 0));
                     } else {
                         Anew = _vertices[_triangles[triN + 1]];
                         edgeN = 0;
+                        Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN + 1]]), new Color(0, 0.5f, 0));
                     }
                 } else if (edgeN == 2) {
                     vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN]]);
@@ -85,7 +91,7 @@ public class GeomProcessor {
             startPoint = Anew;
 
             n++;
-            if (n > 100) {
+            if (res.Count == 7) {
                 break;
             }
             triN = 3 * startTriangle;
@@ -147,13 +153,19 @@ public class GeomProcessor {
         _verts[2].Vertex = I2; _verts[2].N = 2;
         Array.Sort(_verts, vertsComparer);
 
-        if (_verts[0].N != edgeToPreviousTriangle) {
+        if (Vector3.Equals(_verts[0].Vertex, _verts[1].Vertex)) {
+            if (_verts[0].N != edgeToPreviousTriangle) {
+                edgeIndex = _verts[0].N;
+                I = _verts[0].Vertex;
+            } else {
+                edgeIndex = _verts[1].N;
+                I = _verts[1].Vertex;
+            }
+        } else {
             edgeIndex = _verts[0].N;
             I = _verts[0].Vertex;
-        } else {
-            edgeIndex = _verts[1].N;
-            I = _verts[1].Vertex;
         }
+       
 
  /*       I = I0;
         if (I1.y < I.y) {
