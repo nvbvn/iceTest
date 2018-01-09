@@ -34,11 +34,14 @@ public class GeomProcessor {
         int edgeToPreviousTris = -1;
         int previousTris;
         bool temp = false;
+        int vN;
+        int edgeN_temp;
         do {
             processTriangle(startTriangle, startPoint, out edgeN, out Anew, edgeToPreviousTris);
-            if (res[res.Count - 1] == Anew) {
-                triN = 3 * startTriangle;
-                int vN;
+            triN = 3 * startTriangle;
+            if (res[res.Count - 1] == Anew/* && !(Anew == _vertices[_triangles[triN]] || Anew == _vertices[_triangles[triN + 1]] || Anew == _vertices[_triangles[triN + 2]])*/) {
+
+                edgeN_temp = edgeN;
                 if (edgeN == 0) {
                     vN = getLowestN(_vertices[_triangles[triN + 1]], _vertices[_triangles[triN]]);
                     if (vN == 1) {
@@ -71,6 +74,11 @@ public class GeomProcessor {
                         edgeN = 0;
                     }
                 }
+
+                if (edgeN == edgeToPreviousTris) {
+                    edgeN = edgeN_temp;
+                    Anew = res[res.Count - 1];
+                }
           //      temp = true;
             }
             res.Add(Anew);
@@ -91,7 +99,7 @@ public class GeomProcessor {
             startPoint = Anew;
 
             n++;
-            if (res.Count == 7) {
+            if (res.Count == 130) {
                 break;
             }
             triN = 3 * startTriangle;

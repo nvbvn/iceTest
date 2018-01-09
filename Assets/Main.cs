@@ -67,17 +67,18 @@ public class Main : MonoBehaviour {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
             cb.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
             cb.SetParent(testIce.transform);
-            cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3*120]];
+            cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3*83]];
 
         cb = Instantiate(cube, new Vector3(), Quaternion.identity);
-        cb.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+        cb.GetComponent<Renderer>().material.color = new Color(0.5f, 0.5f, 0.5f);
         cb.SetParent(testIce.transform);
-        cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3 * 120+1]];
+        cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3 * 83+1]];
 
         cb = Instantiate(cube, new Vector3(), Quaternion.identity);
-        cb.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+        cb.GetComponent<Renderer>().material.color = new Color(0.9f, 0.9f, 0.9f);
         cb.SetParent(testIce.transform);
-        cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3 * 120+2]];*/
+        cb.transform.localPosition = testIce.mesh.vertices[testIce.mesh.triangles[3 * 83+2]];
+        */
     }
 
 
@@ -108,7 +109,7 @@ public class Main : MonoBehaviour {
 
         List<Vector3> points;
 
- /*   	RaycastHit hit;
+   	RaycastHit hit;
         
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
@@ -124,10 +125,10 @@ public class Main : MonoBehaviour {
             points = _testGeomProcessor_doubleSphere_tri.GetEdgeIntersectPoints(doubleSphere_tri.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         } else {
             points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-        }*/
-        MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
+        }
+    /*     MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
         points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
-        
+        */
         Transform cb;
         while (points.Count > cubes.Count) {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
