@@ -39,6 +39,7 @@ public class GeomProcessor {
         do {
             triN = 3 * startTriangle;
             if (startPoint == _vertices[_triangles[triN]] || startPoint == _vertices[_triangles[triN + 1]] || startPoint == _vertices[_triangles[triN + 2]]) {
+                Anew = startPoint; edgeN = triN;
                 List<int> trianglesAroundV = getTrianglesAroundVertex(startPoint, startTriangle);
             } else { 
                 processTriangle(startTriangle, startPoint, out edgeN, out Anew, edgeToPreviousTris);

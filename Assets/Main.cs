@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class Main : MonoBehaviour {
     [SerializeField]
-    private MeshFilter cap1;
+    private MeshFilter icSpiralLow;
 
     [SerializeField]
-    private MeshFilter doubleSphere_tri;
+    private MeshFilter icSpiralMid;
     [SerializeField]
-    private MeshFilter doubleSphere;
+    private MeshFilter icSpincone;
 
     [SerializeField]
     private MeshFilter testIce;
@@ -18,9 +18,6 @@ public class Main : MonoBehaviour {
     [SerializeField]
     private MeshCollider plane;
     // Use this for initialization
-
-    private float D = 1.5f;
-    private Vector3 Np = new Vector3(0, 1, 0);
 
     private Vector3[] _vertices;
     private int[] _triangles;
@@ -54,7 +51,7 @@ public class Main : MonoBehaviour {
         txt = Resources.Load("Trilinks/testIce") as TextAsset;
         _trilinks_testIce = Array.ConvertAll(txt.text.Split(','), int.Parse);
 
-        _vertices = cap1.mesh.vertices;
+ /*       _vertices = cap1.mesh.vertices;
         _triangles = cap1.mesh.triangles;
 
         _testGeomProcessor = new GeomProcessor(cap1.mesh, _trilinks, cap1.transform);
@@ -62,7 +59,7 @@ public class Main : MonoBehaviour {
         _testGeomProcessor_doubleSphere_tri = new GeomProcessor(doubleSphere_tri.mesh, _trilinks_doubleSphere_tri, doubleSphere_tri.transform);
         _testGeomProcessor_testIce = new GeomProcessor(testIce.mesh, _trilinks_testIce, testIce.transform);
         Debug.Log("???");
-
+*/
   /*      Transform cb;
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
             cb.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
@@ -117,7 +114,7 @@ public class Main : MonoBehaviour {
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
 
-        if (meshCollider == cap1.GetComponent<MeshCollider>()) {
+ /*       if (meshCollider == cap1.GetComponent<MeshCollider>()) {
             points = _testGeomProcessor.GetEdgeIntersectPoints(cap1.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         } else if (meshCollider == doubleSphere.GetComponent<MeshCollider>()) {
             points = _testGeomProcessor_doubleSphere.GetEdgeIntersectPoints(doubleSphere.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
@@ -126,11 +123,11 @@ public class Main : MonoBehaviour {
         } else {
             points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         }
-    /*     MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
+   */ /*     MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
         points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
         */
         Transform cb;
-        while (points.Count > cubes.Count) {
+/*        while (points.Count > cubes.Count) {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
             cb.GetComponent<Renderer>().material.color = new Color(1, 0, 0);
             cubes.Add(cb);
@@ -148,7 +145,7 @@ public class Main : MonoBehaviour {
             }
             cubes[i].transform.localPosition = points[i];
         }
-    }
+    */}
 
 
 
