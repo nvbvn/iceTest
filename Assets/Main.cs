@@ -22,15 +22,15 @@ public class Main : MonoBehaviour {
     private Vector3[] _vertices;
     private int[] _triangles;
 
-    private int[] _trilinks;
-    private int[] _trilinks_doubleSphere;
-    private int[] _trilinks_doubleSphere_tri;
+    private int[] _trilinks_spincone;
+    private int[] _trilinks_spiralLow;
+    private int[] _trilinks_spiralMid;
     private int[] _trilinks_testIce;
 
 
-    private GeomProcessor _testGeomProcessor;
-    private GeomProcessor _testGeomProcessor_doubleSphere;
-    private GeomProcessor _testGeomProcessor_doubleSphere_tri;
+    private GeomProcessor _testGeomProcessor_spincone;
+    private GeomProcessor _testGeomProcessor_spiralLow;
+    private GeomProcessor _testGeomProcessor_spiralMid;
     private GeomProcessor _testGeomProcessor_testIce;
     [SerializeField]
     private Transform cube;
@@ -38,28 +38,32 @@ public class Main : MonoBehaviour {
 
     void Start () {
         Application.targetFrameRate = 60;
- //      _trilinks = GeomPreprocessor.CreateTrilinks(testIce.mesh);
- //       String str = String.Join(",", _trilinks);
-        
-        Debug.Log(DateTime.Now.ToString());
-        TextAsset txt = Resources.Load("Trilinks/capsule") as TextAsset;
-        _trilinks = Array.ConvertAll(txt.text.Split(','), int.Parse);
-        txt = Resources.Load("Trilinks/doubleSphere") as TextAsset;
-        _trilinks_doubleSphere = Array.ConvertAll(txt.text.Split(','), int.Parse);
-        txt = Resources.Load("Trilinks/doubleSphere_tri") as TextAsset;
-        _trilinks_doubleSphere_tri = Array.ConvertAll(txt.text.Split(','), int.Parse);
+
+ /*       Debug.Log(DateTime.Now.ToString());
+
+        _trilinks = GeomPreprocessor.CreateTrilinks(icSpincone.mesh);
+        String str = String.Join(",", _trilinks);
+        _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralLow.mesh);
+        str = String.Join(",", _trilinks);
+        _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralMid.mesh);
+        str = String.Join(",", _trilinks);
+
+        Debug.Log(DateTime.Now.ToString());*/
+
+        TextAsset txt = Resources.Load("Trilinks/spincone") as TextAsset;
+        _trilinks_spincone = Array.ConvertAll(txt.text.Split(','), int.Parse);
+        txt = Resources.Load("Trilinks/spiralLow") as TextAsset;
+        _trilinks_spiralLow = Array.ConvertAll(txt.text.Split(','), int.Parse);
+        txt = Resources.Load("Trilinks/spiralMid") as TextAsset;
+        _trilinks_spiralMid = Array.ConvertAll(txt.text.Split(','), int.Parse);
         txt = Resources.Load("Trilinks/testIce") as TextAsset;
         _trilinks_testIce = Array.ConvertAll(txt.text.Split(','), int.Parse);
 
- /*       _vertices = cap1.mesh.vertices;
-        _triangles = cap1.mesh.triangles;
-
-        _testGeomProcessor = new GeomProcessor(cap1.mesh, _trilinks, cap1.transform);
-        _testGeomProcessor_doubleSphere = new GeomProcessor(doubleSphere.mesh, _trilinks_doubleSphere, doubleSphere.transform);
-        _testGeomProcessor_doubleSphere_tri = new GeomProcessor(doubleSphere_tri.mesh, _trilinks_doubleSphere_tri, doubleSphere_tri.transform);
+        _testGeomProcessor_spincone = new GeomProcessor(icSpincone.mesh, _trilinks_spincone, icSpincone.transform);
+        _testGeomProcessor_spiralLow = new GeomProcessor(icSpiralLow.mesh, _trilinks_spiralLow, icSpiralLow.transform);
+        _testGeomProcessor_spiralMid = new GeomProcessor(icSpiralMid.mesh, _trilinks_spiralMid, icSpiralMid.transform);
         _testGeomProcessor_testIce = new GeomProcessor(testIce.mesh, _trilinks_testIce, testIce.transform);
-        Debug.Log("???");
-*/
+
   /*      Transform cb;
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
             cb.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
@@ -108,11 +112,12 @@ public class Main : MonoBehaviour {
 
    	RaycastHit hit;
         
-        if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+/*        if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
+*/
 
  /*       if (meshCollider == cap1.GetComponent<MeshCollider>()) {
             points = _testGeomProcessor.GetEdgeIntersectPoints(cap1.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
@@ -122,30 +127,30 @@ public class Main : MonoBehaviour {
             points = _testGeomProcessor_doubleSphere_tri.GetEdgeIntersectPoints(doubleSphere_tri.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         } else {
             points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-        }
-   */ /*     MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
+        }*/
+        MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
         points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
-        */
+        
         Transform cb;
-/*        while (points.Count > cubes.Count) {
+        while (points.Count > cubes.Count) {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
             cb.GetComponent<Renderer>().material.color = new Color(1, 0, 0);
             cubes.Add(cb);
         }
         for (i=0; i<points.Count; i++) {
             cubes[i].GetComponent<Renderer>().enabled = true;
-            if (meshCollider == cap1.GetComponent<MeshCollider>()) {
-                cubes[i].SetParent(cap1.transform);
-            } else if (meshCollider == doubleSphere.GetComponent<MeshCollider>()) {
-                cubes[i].SetParent(doubleSphere.transform);
-            } else if (meshCollider == doubleSphere_tri.GetComponent<MeshCollider>()) {
-                cubes[i].SetParent(doubleSphere_tri.transform);
+            if (meshCollider == icSpincone.GetComponent<MeshCollider>()) {
+                cubes[i].SetParent(icSpincone.transform);
+            } else if (meshCollider == icSpiralLow.GetComponent<MeshCollider>()) {
+                cubes[i].SetParent(icSpiralLow.transform);
+            } else if (meshCollider == icSpiralMid.GetComponent<MeshCollider>()) {
+                cubes[i].SetParent(icSpiralMid.transform);
             } else {
                 cubes[i].SetParent(testIce.transform);
             }
             cubes[i].transform.localPosition = points[i];
         }
-    */}
+    }
 
 
 

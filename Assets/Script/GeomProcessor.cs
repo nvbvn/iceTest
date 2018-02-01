@@ -39,14 +39,16 @@ public class GeomProcessor {
         do {
             triN = 3 * startTriangle;
             if (startPoint == _vertices[_triangles[triN]] || startPoint == _vertices[_triangles[triN + 1]] || startPoint == _vertices[_triangles[triN + 2]]) {
-                Anew = startPoint; edgeN = triN;
                 List<int> trianglesAroundV = getTrianglesAroundVertex(startPoint, startTriangle);
+                int steepestTriangle = getSteepestTraiangle(trianglesAroundV);
+                processTriangle(steepestTriangle, startPoint, out edgeN, out Anew, edgeToPreviousTris);
             } else { 
                 processTriangle(startTriangle, startPoint, out edgeN, out Anew, edgeToPreviousTris);
             
                 if (res[res.Count - 1] == Anew) {
 
                     edgeN_temp = edgeN;
+                    //разобраться с ситуацией, когда ребро горизонтально
                     if (edgeN == 0) {
                         vN = getLowestN(_vertices[_triangles[triN + 1]], _vertices[_triangles[triN]]);
                         if (vN == 1) {
@@ -113,8 +115,20 @@ public class GeomProcessor {
         return res;
     }
 
-    private List<int> getTrianglesAroundVertex(Vector3 Vertex, int startTriangle) {
+    private int getSteepestTraiangle(List<int> srcTriangles) {
+        int res = 0;
+        return res;
+    }
+
+    private List<int> getTrianglesAroundVertex(Vector3 vertex, int srcTriangle) {
         List<int> res = new List<int>();
+        int l = _triangles.Length;
+        int triN;
+        for (int i = 0; (triN = 3 * i) < l; i++) {
+            if ((_vertices[_triangles[triN]] == vertex || _vertices[_triangles[triN + 1]] == vertex || _vertices[_triangles[triN + 2]] == vertex) && i != srcTriangle) {
+                res.Add(i/3);
+            }
+        }
         return res;
     }
 
