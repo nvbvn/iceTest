@@ -112,25 +112,30 @@ public class Main : MonoBehaviour {
 
    	RaycastHit hit;
         
-/*        if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+        if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
-*/
 
- /*       if (meshCollider == cap1.GetComponent<MeshCollider>()) {
-            points = _testGeomProcessor.GetEdgeIntersectPoints(cap1.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-        } else if (meshCollider == doubleSphere.GetComponent<MeshCollider>()) {
-            points = _testGeomProcessor_doubleSphere.GetEdgeIntersectPoints(doubleSphere.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-        } else if (meshCollider == doubleSphere_tri.GetComponent<MeshCollider>()) {
-            points = _testGeomProcessor_doubleSphere_tri.GetEdgeIntersectPoints(doubleSphere_tri.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-        } else {
+
+        /*        if (meshCollider == cap1.GetComponent<MeshCollider>()) {
+                    points = _testGeomProcessor.GetEdgeIntersectPoints(cap1.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+                } else if (meshCollider == doubleSphere.GetComponent<MeshCollider>()) {
+                    points = _testGeomProcessor_doubleSphere.GetEdgeIntersectPoints(doubleSphere.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+                } else if (meshCollider == doubleSphere_tri.GetComponent<MeshCollider>()) {
+                    points = _testGeomProcessor_doubleSphere_tri.GetEdgeIntersectPoints(doubleSphere_tri.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+                } else {
+                    points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+                }
+        */
+
+        //if (meshCollider == testIce.GetComponent<MeshCollider>()) {
             points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-        }*/
-        MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
+        //}
+        /*MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
         points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
-        
+        */
         Transform cb;
         while (points.Count > cubes.Count) {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
