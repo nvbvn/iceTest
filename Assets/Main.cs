@@ -119,22 +119,23 @@ public class Main : MonoBehaviour {
             return;
 
 
-        /*        if (meshCollider == cap1.GetComponent<MeshCollider>()) {
-                    points = _testGeomProcessor.GetEdgeIntersectPoints(cap1.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-                } else if (meshCollider == doubleSphere.GetComponent<MeshCollider>()) {
-                    points = _testGeomProcessor_doubleSphere.GetEdgeIntersectPoints(doubleSphere.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-                } else if (meshCollider == doubleSphere_tri.GetComponent<MeshCollider>()) {
-                    points = _testGeomProcessor_doubleSphere_tri.GetEdgeIntersectPoints(doubleSphere_tri.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-                } else {
-                    points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-                }
-        */
-
-        //if (meshCollider == testIce.GetComponent<MeshCollider>()) {
+        if (meshCollider == icSpincone.GetComponent<MeshCollider>()) {
+            points = _testGeomProcessor_spincone.GetEdgeIntersectPoints(icSpincone.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+        } else if (meshCollider == icSpiralLow.GetComponent<MeshCollider>()) {
+            points = _testGeomProcessor_spiralLow.GetEdgeIntersectPoints(icSpiralLow.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+        } else if (meshCollider == icSpiralMid.GetComponent<MeshCollider>()) {
+            points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+        } else {
             points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-        //}
-        /*MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
-        points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
+        }
+        
+
+        
+        //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+        
+    /*    MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
+        //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
+        points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-1.349147f, 0.7382534f, -0.1626387f)), 322);
         */
         Transform cb;
         while (points.Count > cubes.Count) {
@@ -152,6 +153,9 @@ public class Main : MonoBehaviour {
                 cubes[i].SetParent(icSpiralMid.transform);
             } else {
                 cubes[i].SetParent(testIce.transform);
+            }
+            if (float.IsInfinity(points[i].x)) {
+                Debug.Log("!!!");
             }
             cubes[i].transform.localPosition = points[i];
         }
