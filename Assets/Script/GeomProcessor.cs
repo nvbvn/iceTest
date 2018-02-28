@@ -34,7 +34,6 @@ public class GeomProcessor {
         Vector3 Anew;
         int n = 0;
 
-        //List<int> st = new List<int>();
         int i;
         int triN;
         int edgeToPreviousTris = -1;
@@ -43,12 +42,11 @@ public class GeomProcessor {
         int vN;
         int edgeN_temp;
         Vector3 vNormal;
-//        bool b = false;
         do {
             triN = 3 * startTriangle;
-            if (res.Count == 2) {
+            /*if (res.Count == 2) {
                 traceTriangle(startTriangle, new Color(0.5f, 0, 0.4f));
-            }
+            }*/
             if (startPoint == _vertices[_triangles[triN]] || startPoint == _vertices[_triangles[triN + 1]] || startPoint == _vertices[_triangles[triN + 2]]) {
                 List<int> trianglesAroundV = getTrianglesAroundVertex(startPoint, previousTris, out vNormal);
                 List<int> trianglesAroundVLowThan = getLowerTrianglesAroundVertex(trianglesAroundV, startPoint);
@@ -62,19 +60,6 @@ public class GeomProcessor {
                         break;
                     }
                 }
-                Debug.DrawRay(_transform.TransformPoint( _vertices[_triangles[triN]]), new Vector3(0, 0, -1), new Color(1, 0, 0));
-                Debug.DrawRay(_transform.TransformPoint( _vertices[_triangles[triN+1]]), new Vector3(0, 0, -1), new Color(0.5f, 0, 0));
-/*                for (int k=0; k<trianglesAroundV.Count; k++) {
-                    if (b) {
-                        break;
-                    }
-                    Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN]]+ normals[_triangles[triN]]), new Color(1, 0, 0));
-                    Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN+1]]), _transform.TransformPoint(_vertices[_triangles[triN+1]] + normals[_triangles[triN+1]]), new Color(0, 1, 0));
-                    Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN+2]]), _transform.TransformPoint(_vertices[_triangles[triN+2]] + normals[_triangles[triN+2]]), new Color(0, 0, 1));
-                    b = true;
-                }
-*/
-                //processTriangleByNormal(startTriangle, startPoint, out edgeN, out Anew, edgeToPreviousTris);
             } else { 
                 processTriangleByNormal(startTriangle, startPoint, out edgeN, out Anew, edgeToPreviousTris);
             
@@ -87,39 +72,29 @@ public class GeomProcessor {
                         if (vN == 1) {
                             Anew = _vertices[_triangles[triN + 1]];
                             edgeN = 1;
-                            //Debug.DrawLine(_transform.TransformPoint( _vertices[_triangles[triN+1]]), _transform.TransformPoint(_vertices[_triangles[triN + 2]]), new Color(1, 0, 0));
-                        } else {
+                        } else if (vN == 2) {
                             Anew = _vertices[_triangles[triN]];
                             edgeN = 2;
-                            //Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN + 2]]), new Color(0.5f, 0, 0));
                         }
                     } else if (edgeN == 1) {
                         vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN + 1]]);
                         if (vN == 1) {
                             Anew = _vertices[_triangles[triN + 2]];
                             edgeN = 2;
-                            //Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN + 2]]), new Color(0, 1, 0));
-                        } else {
+                        } else if (vN == 2) {
                             Anew = _vertices[_triangles[triN + 1]];
                             edgeN = 0;
-                            //Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN + 1]]), new Color(0, 0.5f, 0));
                         }
                     } else if (edgeN == 2) {
                         vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN]]);
                         if (vN == 1) {
                             Anew = _vertices[_triangles[triN + 2]];
                             edgeN = 1;
-                        } else {
+                        } else if (vN == 2) {
                             Anew = _vertices[_triangles[triN]];
                             edgeN = 0;
                         }
                     }
-
-                    /*if (edgeN == edgeToPreviousTris) {
-                        edgeN = edgeN_temp;
-                        Anew = res[res.Count - 1];
-                    }*/
-              //      temp = true;
                 }
             }
             res.Add(Anew);
@@ -128,6 +103,11 @@ public class GeomProcessor {
             startTriangle = _trilinks[3 * startTriangle + edgeN];
 
             if (startTriangle == -1) {
+                Debug.Log("by startTriangle");
+                break;
+            } else if (res[res.Count - 1] == res[res.Count - 2]) {
+                res.RemoveAt(res.Count - 2);
+                Debug.Log("by no new");
                 break;
             }
 
@@ -140,14 +120,14 @@ public class GeomProcessor {
             startPoint = Anew;
 
             n++;
-            if (res.Count == 120) {
+            if (res.Count == 200) {
                 break;
             }
-            triN = 3 * startTriangle;
-            if (res.Count == 11) {
-                triN = 3 * startTriangle;
+            if (MathUtil.ApproximatelyLessThanOrEqual(Anew.y, minY)) {
+            //    Debug.Log("by ApproximatelyLessThanOrEqual");
             }
-        } while (!MathUtil.ApproximatelyLessThanOrEqual(Anew.y, minY));
+        } while (true/*!MathUtil.ApproximatelyLessThanOrEqual(Anew.y, minY)*/);
+
         return res;
     }
 
@@ -203,9 +183,11 @@ public class GeomProcessor {
     }
 
     private int getLowestN(Vector3 V1, Vector3 V0) {
-        int res = 1;
+        int res = 0;
         if (V0.y < V1.y) {
             res = 2;
+        } else if (V0.y > V1.y) {
+            res = 1;
         }
         return res;
     }
@@ -296,11 +278,6 @@ public class GeomProcessor {
         }*/
         edgeN = edgeIndex;
         Anew = I;
-        if (Anew == new Vector3(0.3011334f, 0.3f, -0.9010766f)) {
-            Debug.DrawLine(_transform.TransformPoint(v1), _transform.TransformPoint(v0), new Color(0, 0, 1));
-            Debug.DrawLine(_transform.TransformPoint(v1), _transform.TransformPoint(v2), new Color(0, 1, 0));
-            Debug.DrawLine(_transform.TransformPoint(v2), _transform.TransformPoint(v0), new Color(1, 0, 0));
-        }
     }
 
     private Vector3 edgeIntersect(Vector3 P, Vector3 A, Vector3 X, Vector3 T1, Vector3 T2) {
