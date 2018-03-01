@@ -42,16 +42,22 @@ public class GeomProcessor {
         int vN;
         int edgeN_temp;
         Vector3 vNormal;
+        List<int> trianglesAroundV;
+        List<int> trianglesAroundVLowThan;
         do {
             triN = 3 * startTriangle;
             /*if (res.Count == 2) {
                 traceTriangle(startTriangle, new Color(0.5f, 0, 0.4f));
             }*/
             if (startPoint == _vertices[_triangles[triN]] || startPoint == _vertices[_triangles[triN + 1]] || startPoint == _vertices[_triangles[triN + 2]]) {
-                List<int> trianglesAroundV = getTrianglesAroundVertex(startPoint, previousTris, out vNormal);
-                List<int> trianglesAroundVLowThan = getLowerTrianglesAroundVertex(trianglesAroundV, startPoint);
+                trianglesAroundV = getTrianglesAroundVertex(startPoint, previousTris, out vNormal);
+                trianglesAroundVLowThan = getLowerTrianglesAroundVertex(trianglesAroundV, startPoint);
                 Anew = startPoint;
                 edgeN = 0;
+              /*  traceTriangle(trianglesAroundVLowThan[0], new Color(0, 0, 1));
+                traceTriangle(trianglesAroundVLowThan[1], new Color(0, 1, 0));
+                Debug.DrawRay(_transform.TransformPoint(startPoint), 0.2f*vNormal, new Color(1, 0, 0));
+                Debug.DrawRay(_transform.TransformPoint(startPoint)+ 0.2f * vNormal, new Vector3(0, -2, 0), new Color(1, 0, 0));*/
                 for (i = 0; i < trianglesAroundVLowThan.Count; i++) {
                     processTriangleByVector(trianglesAroundVLowThan[i], startPoint, vNormal, out edgeN, out Anew);
                     if (Anew.y < startPoint.y) {
@@ -158,8 +164,11 @@ public class GeomProcessor {
 
     private void traceTriangle(int triangleIndex, Color color) {
         int triN = triangleIndex * 3;
+        Vector3 a = _vertices[_triangles[triN]];
         Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN]]), normals[_triangles[triN]], color);
+        Vector3 a1 = _vertices[_triangles[triN+1]];
         Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN + 1]]), normals[_triangles[triN + 1]], color);
+        Vector3 a2 = _vertices[_triangles[triN+2]];
         Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN + 2]]), normals[_triangles[triN + 2]], color);
     }
 
