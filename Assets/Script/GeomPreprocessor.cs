@@ -45,22 +45,24 @@ public class GeomPreprocessor {
         return res;
     }
 
-    public static int[][] CreateTrisAroundVertex(Mesh srcMesh) {
+    public static string[] CreateTrisAroundVertex(Mesh srcMesh) {
         Vector3[] verts = srcMesh.vertices;
         int[] tris = srcMesh.triangles;
         int l = verts.Length;
         int tl = tris.Length;
-        int[][] res = new int[l][];
+        string[] res = new string[l];
         Vector3 v;
-        int triN;
+        int triN, j;
         List<int> temp = new List<int>();
         for (int i=0; i<l; i++) {
             v = verts[i];
-            for (int j=0; (triN = 3*j)<tl; j++) {
-                if (verts[tris[triN]]) {
-
+            for (j=0; (triN = 3*j)<tl; j++) {
+                if (verts[tris[triN]] == v || verts[tris[triN+1]] == v || verts[tris[triN+2]] == v) {
+                    temp.Add(j);
                 }
             }
+            res[i] = string.Join(";", temp.ToArray());
+            temp.Clear();
         }
         return res;
     }

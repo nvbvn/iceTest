@@ -10,16 +10,18 @@ public class GeomProcessor {
     private Mesh _mesh;
     private Transform _transform;
     private int[] _trilinks;
+    private int[][] _trisAroundVertex;
     private Vector3[] _vertices;
     private int[] _triangles;
 
     Vector4[] tangents;
     Vector3[] normals;
 
-    public GeomProcessor(Mesh mesh, int[] trilinks, Transform transform) {
+    public GeomProcessor(Mesh mesh, int[] trilinks, int[][] trisAroundVertex, Transform transform) {
         _mesh = mesh;
         _transform = transform;
         _trilinks = trilinks;
+        _trisAroundVertex = trisAroundVertex;
         _vertices = mesh.vertices;
         _triangles = mesh.triangles;
         tangents = mesh.tangents;

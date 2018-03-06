@@ -22,12 +22,7 @@ public class Main : MonoBehaviour {
     private Vector3[] _vertices;
     private int[] _triangles;
 
-    private int[] _trilinks_spincone;
-    private int[] _trilinks_spiralLow;
-    private int[] _trilinks_spiralMid;
-    private int[] _trilinks_testIce;
-
-
+    
     private GeomProcessor _testGeomProcessor_spincone;
     private GeomProcessor _testGeomProcessor_spiralLow;
     private GeomProcessor _testGeomProcessor_spiralMid;
@@ -39,7 +34,11 @@ public class Main : MonoBehaviour {
     void Start () {
         Application.targetFrameRate = 60;
 
- /*       Debug.Log(DateTime.Now.ToString());
+/*        string trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpincone.mesh));
+        trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralLow.mesh));
+        trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralMid.mesh));
+        trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(testIce.mesh));
+        Debug.Log(DateTime.Now.ToString());
 
         _trilinks = GeomPreprocessor.CreateTrilinks(icSpincone.mesh);
         String str = String.Join(",", _trilinks);
@@ -50,19 +49,30 @@ public class Main : MonoBehaviour {
 
         Debug.Log(DateTime.Now.ToString());*/
 
-        TextAsset txt = Resources.Load("Trilinks/spincone") as TextAsset;
-        _trilinks_spincone = Array.ConvertAll(txt.text.Split(','), int.Parse);
-        txt = Resources.Load("Trilinks/spiralLow") as TextAsset;
-        _trilinks_spiralLow = Array.ConvertAll(txt.text.Split(','), int.Parse);
-        txt = Resources.Load("Trilinks/spiralMid") as TextAsset;
-        _trilinks_spiralMid = Array.ConvertAll(txt.text.Split(','), int.Parse);
-        txt = Resources.Load("Trilinks/testIce") as TextAsset;
-        _trilinks_testIce = Array.ConvertAll(txt.text.Split(','), int.Parse);
 
-        _testGeomProcessor_spincone = new GeomProcessor(icSpincone.mesh, _trilinks_spincone, icSpincone.transform);
-        _testGeomProcessor_spiralLow = new GeomProcessor(icSpiralLow.mesh, _trilinks_spiralLow, icSpiralLow.transform);
-        _testGeomProcessor_spiralMid = new GeomProcessor(icSpiralMid.mesh, _trilinks_spiralMid, icSpiralMid.transform);
-        _testGeomProcessor_testIce = new GeomProcessor(testIce.mesh, _trilinks_testIce, testIce.transform);
+        TextAsset txt = Resources.Load("Trilinks/spincone") as TextAsset;
+        int[] trilinks_spincone = Array.ConvertAll(txt.text.Split(','), int.Parse);
+        txt = Resources.Load("Trilinks/spiralLow") as TextAsset;
+        int[] trilinks_spiralLow = Array.ConvertAll(txt.text.Split(','), int.Parse);
+        txt = Resources.Load("Trilinks/spiralMid") as TextAsset;
+        int[] trilinks_spiralMid = Array.ConvertAll(txt.text.Split(','), int.Parse);
+        txt = Resources.Load("Trilinks/testIce") as TextAsset;
+        int[] trilinks_testIce = Array.ConvertAll(txt.text.Split(','), int.Parse);
+
+        int[][] tav_spincone = createTav("TrisAroundVertex/spincone");
+        int[][] tav_spiralLow = createTav("TrisAroundVertex/spiralLow");
+        int[][] tav_spiralMid = createTav("TrisAroundVertex/spiralMid");
+        int[][] tav_testIce = createTav("TrisAroundVertex/testIce");
+
+        //TimeSpan ts1 = TimeSpan.FromTicks(DateTime.Now.Ticks);
+        //Debug.Log(DateTime.Now.ToString());
+        _testGeomProcessor_spincone = new GeomProcessor(icSpincone.mesh, trilinks_spincone, tav_spincone, icSpincone.transform);
+        _testGeomProcessor_spiralLow = new GeomProcessor(icSpiralLow.mesh, trilinks_spiralLow, tav_spiralLow, icSpiralLow.transform);
+        _testGeomProcessor_spiralMid = new GeomProcessor(icSpiralMid.mesh, trilinks_spiralMid, tav_spiralMid, icSpiralMid.transform);
+        _testGeomProcessor_testIce = new GeomProcessor(testIce.mesh, trilinks_testIce, tav_testIce, testIce.transform);
+        TimeSpan ts2 = TimeSpan.FromTicks(DateTime.Now.Ticks);
+        //Debug.Log((ts2 - ts1).Milliseconds);
+        //Debug.Log(DateTime.Now.ToString());
 
   /*      Transform cb;
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
@@ -82,6 +92,16 @@ public class Main : MonoBehaviour {
         */
     }
 
+    private int[][] createTav(string src) {
+        TextAsset txt = Resources.Load(src) as TextAsset;
+        string[] temp = txt.text.Split(',');
+        int l = temp.Length;
+        int[][] res = new int[l][];
+        for (int i=0; i<l; i++) {
+            res[i] = Array.ConvertAll(temp[i].Split(';'), int.Parse);
+        }
+        return res;
+    }
 
 
 	// Update is called once per frame
