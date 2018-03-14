@@ -41,18 +41,19 @@ public class GeomProcessor {
         int edgeToPreviousTris = -1;
         int previousTris = startTriangle;
         bool temp = false;
-        int vN;
-        int edgeN_temp;
+        int vN, commonEdgeN;
+   //     int edgeN_temp;
         Vector3 vNormal;
-        List<int> trianglesAroundV;
+        int[] trianglesAroundV;
         List<int> trianglesAroundVLowThan;
         do {
             triN = 3 * startTriangle;
             /*if (res.Count == 2) {
                 traceTriangle(startTriangle, new Color(0.5f, 0, 0.4f));
             }*/
-            if (startPoint == _vertices[_triangles[triN]] || startPoint == _vertices[_triangles[triN + 1]] || startPoint == _vertices[_triangles[triN + 2]]) {
-                trianglesAroundV = getTrianglesAroundVertex(startPoint, previousTris, out vNormal);
+            if (startPoint == _vertices[vN = _triangles[triN]] || startPoint == _vertices[vN = _triangles[triN + 1]] || startPoint == _vertices[vN = _triangles[triN + 2]]) {
+               // trianglesAroundV = getTrianglesAroundVertex(startPoint, previousTris, out vNormal);
+                trianglesAroundV = getTrianglesAroundVertex(vN, previousTris, out vNormal);
                 trianglesAroundVLowThan = getLowerTrianglesAroundVertex(trianglesAroundV, startPoint);
                 Anew = startPoint;
                 edgeN = 0;
@@ -68,14 +69,17 @@ public class GeomProcessor {
                         break;
                     }
                 }
+                if ((startPoint == Anew) && (trianglesAroundVLowThan.Count == 2)) {
+                    commonEdgeN = getCommonEdge(Anew, trianglesAroundVLowThan);
+                }
             } else { 
                 processTriangleByNormal(startTriangle, startPoint, out edgeN, out Anew, edgeToPreviousTris);
             
                 if (res[res.Count - 1] == Anew) {
 
-                    edgeN_temp = edgeN;
+   //                 edgeN_temp = edgeN;
                     //разобраться с ситуацией, когда ребро горизонтально
-                    if (edgeN == 0) {
+                   /* if (edgeN == 0) {
                         vN = getLowestN(_vertices[_triangles[triN + 1]], _vertices[_triangles[triN]]);
                         if (vN == 1) {
                             Anew = _vertices[_triangles[triN + 1]];
@@ -102,7 +106,7 @@ public class GeomProcessor {
                             Anew = _vertices[_triangles[triN]];
                             edgeN = 0;
                         }
-                    }
+                    }*/
                 }
             }
             res.Add(Anew);
@@ -139,7 +143,84 @@ public class GeomProcessor {
         return res;
     }
 
-    private List<int> getTrianglesAroundVertex(Vector3 vertex, int srcTriangle, out Vector3 vNormal) {
+    /// <summary>
+    /// Нахождение общей грани между ДВУМЯ треугольниками
+    /// </summary>
+    /// <param name="cV"></param>
+    /// <param name="trianglesAroundV"></param>
+    /// <returns></returns>
+    private int getCommonEdge(Vector3 cV, List<int> trianglesAroundV) {
+        int res = 0;
+        int vN1 = 0, vN2 = 0;
+        int triN1 = trianglesAroundV[0] * 3;
+        int triN2 = trianglesAroundV[1] * 3;
+        for (int i=0; i<3; i++) {
+            for (int j=0; j<3; j++) {
+                if (_vertices[_triangles[triN1+i]] == _vertices[_triangles[triN2 + j]]) {
+                    if (_vertices[_triangles[triN1 + i]] == cV) {
+                        vN1 = i;
+                    } else {
+                        vN2 = i;
+                    }
+                }
+            }
+        }
+        if ((vN1 == 1 && vN2 == 2) || (vN1 == 2 && vN2 == 1)) {
+            res = 1;
+        } else if ((vN1 == 0 && vN2 == 2) || (vN1 == 2 && vN2 == 0)) {
+            res = 2;
+        }
+        return res;
+    }
+
+    private void goDownAlongEdge(int triangleN, ref Vector3 Anew, ref int edgeN) {
+        int vN;
+        int triN = 3 * triangleN;
+        if (edgeN == 0) {
+            vN = getLowestN(_vertices[_triangles[triN + 1]], _vertices[_triangles[triN]]);
+            if (vN == 1) {
+                Anew = _vertices[_triangles[triN + 1]];
+                edgeN = 1;
+            } else if (vN == 2) {
+                Anew = _vertices[_triangles[triN]];
+                edgeN = 2;
+            }
+        } else if (edgeN == 1) {
+            vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN + 1]]);
+            if (vN == 1) {
+                Anew = _vertices[_triangles[triN + 2]];
+                edgeN = 2;
+            } else if (vN == 2) {
+                Anew = _vertices[_triangles[triN + 1]];
+                edgeN = 0;
+            }
+        } else if (edgeN == 2) {
+            vN = getLowestN(_vertices[_triangles[triN + 2]], _vertices[_triangles[triN]]);
+            if (vN == 1) {
+                Anew = _vertices[_triangles[triN + 2]];
+                edgeN = 1;
+            } else if (vN == 2) {
+                Anew = _vertices[_triangles[triN]];
+                edgeN = 0;
+            }
+        }
+    }
+
+    private int[] getTrianglesAroundVertex(int vertN, int srcTriangle, out Vector3 vNormal) {
+        int[] res = _trisAroundVertex[vertN];
+        vNormal = Vector3.zero;
+        int triN;
+        Vector3 n;
+        for (int i=0; i<res.Length; i++) {
+            triN = 3 * res[i];
+            n = Vector3.Cross(_vertices[_triangles[triN + 1]] - _vertices[_triangles[triN + 0]], _vertices[_triangles[triN + 2]] - _vertices[_triangles[triN + 0]]);
+            n.Normalize();
+            vNormal += n;
+        }
+        return res;
+    }
+
+    private int[] getTrianglesAroundVertex(Vector3 vertex, int srcTriangle, out Vector3 vNormal) {
         List<int> res = new List<int>();
         int l = _triangles.Length;
         int triN;
@@ -161,7 +242,8 @@ public class GeomProcessor {
             }
         }
         vNormal.Normalize();
-        return res;
+        int[] resA = res.ToArray();
+        return resA;
     }
 
     private void traceTriangle(int triangleIndex, Color color) {
@@ -174,18 +256,18 @@ public class GeomProcessor {
         Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN + 2]]), normals[_triangles[triN + 2]], color);
     }
 
-    private List<int> getLowerTrianglesAroundVertex(List<int> tris, Vector3 vert) {
+    private List<int> getLowerTrianglesAroundVertex(int[] tris, Vector3 vert) {
         List<int> res = new List<int>();
         int triN;
         Debug.DrawRay(_transform.TransformPoint(vert), new Vector3(0, 0, -1), new Color(0.5f, 0.5f, 0.5f));
-        for (int i=0; i<tris.Count; i++) {
+        for (int i=0; i<tris.Length; i++) {
             triN = tris[i] * 3;
             //Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN]]), new Vector3(0, 0, -1), new Color(0, 1, 0));
             //Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN+1]]), new Vector3(0, 0, -1), new Color(0, 1, 0));
             //Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN+2]]), new Vector3(0, 0, -1), new Color(0, 1, 0));
-            if (i==6) {
+            /*if (i==6) {
                 traceTriangle(tris[i], new Color(0, 0.5f, 0));
-            }
+            }*/
             if (_vertices[_triangles[triN]].y < vert.y || _vertices[_triangles[triN + 1]].y < vert.y || _vertices[_triangles[triN + 2]].y < vert.y) {
                 res.Add(tris[i]);
             }

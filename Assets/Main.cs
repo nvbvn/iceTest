@@ -132,7 +132,7 @@ public class Main : MonoBehaviour {
 
    	RaycastHit hit;
         
-        if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+  /*      if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null)
@@ -148,7 +148,7 @@ public class Main : MonoBehaviour {
         } else {
             points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         }
-        
+    */    
         
         
         //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
@@ -157,9 +157,9 @@ public class Main : MonoBehaviour {
         //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
         points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-1.349147f, 0.7382534f, -0.1626387f)), 322);
         */
-  /*      MeshCollider meshCollider = icSpiralLow.GetComponent<MeshCollider>();
+        MeshCollider meshCollider = icSpiralLow.GetComponent<MeshCollider>();
         points = _testGeomProcessor_spiralLow.GetEdgeIntersectPoints(icSpiralLow.transform.InverseTransformPoint(new Vector3(2.927554f, 0.9878784f, -0.008455698f)), 9092);
-        */
+        
         Transform cb;
         while (points.Count > cubes.Count) {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
