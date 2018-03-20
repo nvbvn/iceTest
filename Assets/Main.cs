@@ -130,7 +130,7 @@ public class Main : MonoBehaviour {
 
         List<Vector3> points;
 
-/*   	RaycastHit hit;
+   	RaycastHit hit;
         
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
@@ -149,7 +149,7 @@ public class Main : MonoBehaviour {
             points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         }
 
-       */ 
+        
         
         //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
         
@@ -161,9 +161,10 @@ public class Main : MonoBehaviour {
         points = _testGeomProcessor_spiralLow.GetEdgeIntersectPoints(icSpiralLow.transform.InverseTransformPoint(new Vector3(2.927554f, 0.9878784f, -0.008455698f)), 9092);
   */      
 
-        MeshCollider meshCollider = icSpiralMid.GetComponent<MeshCollider>();
-        points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(new Vector3(1.112241f, 0.9138252f, -0.04689942f)), 15931);
-
+ /*       MeshCollider meshCollider = icSpiralMid.GetComponent<MeshCollider>();
+        //points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(new Vector3(1.112241f, 0.9138252f, -0.04689942f)), 15931);
+        points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(new Vector3(1.002526f, 0.9781381f, -0.05147566f)), 16524);
+*/
         Transform cb;
         while (points.Count > cubes.Count) {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
@@ -182,7 +183,7 @@ public class Main : MonoBehaviour {
                 cubes[i].SetParent(testIce.transform);
             }
             if (float.IsInfinity(points[i].x)) {
-                Debug.Log("!!!");
+                Debug.Log("!!!"+meshCollider.name+": ("+hit.point.x+"; "+hit.point.y+"; "+hit.point.z+")|"+hit.triangleIndex);
             }
             cubes[i].transform.localPosition = points[i];
         }

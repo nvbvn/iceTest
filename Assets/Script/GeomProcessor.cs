@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GeomProcessor {
+    public const int MAX_POINTS_COUNT = 300;
+
     private readonly Vector3 Np = new Vector3(0, 1, 0);
-    private readonly float D = 1.5f;
+    private float D = 5.0f;
 
     private Mesh _mesh;
     private Transform _transform;
@@ -20,6 +22,7 @@ public class GeomProcessor {
     private List<Vector3> res;
 
     public GeomProcessor(Mesh mesh, int[] trilinks, int[][] trisAroundVertex, Transform transform) {
+        D = mesh.bounds.min.y - 2;
         _mesh = mesh;
         _transform = transform;
         _trilinks = trilinks;
@@ -50,7 +53,7 @@ public class GeomProcessor {
         List<int> trianglesAroundVLowThan;
         do {
             triN = 3 * startTriangle;
-            if (res.Count == 140) {
+            if (res.Count == 160) {
                 //traceTriangle(startTriangle, new Color(0.5f, 0, 0));
                 Debug.Log("");
             }
@@ -147,7 +150,7 @@ public class GeomProcessor {
             startPoint = Anew;
 
             n++;
-            if (res.Count == 200) {
+            if (res.Count > MAX_POINTS_COUNT) {
                 break;
             }
             if (MathUtil.ApproximatelyLessThanOrEqual(Anew.y, minY)) {
