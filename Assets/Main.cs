@@ -29,7 +29,13 @@ public class Main : MonoBehaviour {
     private GeomProcessor _testGeomProcessor_testIce;
     [SerializeField]
     private Transform cube;
+    [SerializeField]
+    private Transform blobPrefab;
     private List<Transform> cubes = new List<Transform>();
+
+
+    private List<Transform> _freeBlobs = new List<Transform>();
+    private List<BlobGuide> _guides = new List<BlobGuide>();
 
     void Start () {
         Application.targetFrameRate = 60;
@@ -128,9 +134,14 @@ public class Main : MonoBehaviour {
         Debug.DrawRay(A, n);
         return;*/
 
+        foreach (BlobGuide guide in _guides) {
+            guide.Update();
+        }
+
+
         List<Vector3> points;
 
-   	RaycastHit hit;
+   	    RaycastHit hit;
         
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
@@ -138,16 +149,23 @@ public class Main : MonoBehaviour {
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
 
-
+        Transform targetObject;
+        GeomProcessor targetProcessor;
         if (meshCollider == icSpincone.GetComponent<MeshCollider>()) {
-            points = _testGeomProcessor_spincone.GetEdgeIntersectPoints(icSpincone.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+            targetObject = icSpincone.transform;
+            targetProcessor = _testGeomProcessor_spincone;
         } else if (meshCollider == icSpiralLow.GetComponent<MeshCollider>()) {
-            points = _testGeomProcessor_spiralLow.GetEdgeIntersectPoints(icSpiralLow.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+            targetObject = icSpiralLow.transform;
+            targetProcessor = _testGeomProcessor_spiralLow;
         } else if (meshCollider == icSpiralMid.GetComponent<MeshCollider>()) {
-            points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+            targetObject = icSpiralMid.transform;
+            targetProcessor = _testGeomProcessor_spiralMid;
         } else {
-            points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+            targetObject = testIce.transform;
+            targetProcessor = _testGeomProcessor_testIce;
         }
+
+        points = targetProcessor.GetEdgeIntersectPoints(targetObject.InverseTransformPoint(hit.point), hit.triangleIndex);
 
         
         
@@ -173,20 +191,32 @@ public class Main : MonoBehaviour {
         }
         for (i=0; i<points.Count; i++) {
             cubes[i].GetComponent<Renderer>().enabled = true;
-            if (meshCollider == icSpincone.GetComponent<MeshCollider>()) {
-                cubes[i].SetParent(icSpincone.transform);
-            } else if (meshCollider == icSpiralLow.GetComponent<MeshCollider>()) {
-                cubes[i].SetParent(icSpiralLow.transform);
-            } else if (meshCollider == icSpiralMid.GetComponent<MeshCollider>()) {
-                cubes[i].SetParent(icSpiralMid.transform);
-            } else {
-                cubes[i].SetParent(testIce.transform);
-            }
+            cubes[i].SetParent(targetObject);
+
             if (float.IsInfinity(points[i].x)) {
                 Debug.Log("!!!"+meshCollider.name+": ("+hit.point.x+"; "+hit.point.y+"; "+hit.point.z+")|"+hit.triangleIndex);
             }
             cubes[i].transform.localPosition = points[i];
         }
+
+        if (Input.GetMouseButtonDown(0)) {
+            Transform blob = getBlob();
+            blob.SetParent(targetObject);
+            BlobGuide blobGuide = new BlobGuide(blob, points);
+            _guides.Add(blobGuide);
+        }
+    }
+
+    private Transform getBlob() {
+        Transform res = null;
+        if (_freeBlobs.Count > 0) {
+            res = _freeBlobs[0];
+            _freeBlobs.RemoveAt(0);
+        } else {
+            res = Instantiate(blobPrefab, new Vector3(), Quaternion.identity);
+            res.GetComponent<Renderer>().material.color = new Color(0, 0, 1);
+        }
+        return res;
     }
 
 

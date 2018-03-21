@@ -55,7 +55,7 @@ public class GeomProcessor {
             triN = 3 * startTriangle;
             if (res.Count == 160) {
                 //traceTriangle(startTriangle, new Color(0.5f, 0, 0));
-                Debug.Log("");
+//                Debug.Log("");
             }
             if (startPoint == _vertices[vN = _triangles[triN]] || startPoint == _vertices[vN = _triangles[triN + 1]] || startPoint == _vertices[vN = _triangles[triN + 2]]) {
                // trianglesAroundV = getTrianglesAroundVertex(startPoint, previousTris, out vNormal);
@@ -133,11 +133,11 @@ public class GeomProcessor {
             startTriangle = _trilinks[3 * startTriangle + edgeN];
 
             if (startTriangle == -1) {
-                Debug.Log("by startTriangle");
+//                Debug.Log("by startTriangle");
                 break;
             } else if (res[res.Count - 1] == res[res.Count - 2]) {
                 res.RemoveAt(res.Count - 2);
-                Debug.Log("by no new");
+//                Debug.Log("by no new");
                 break;
             }
 

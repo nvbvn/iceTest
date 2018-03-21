@@ -503,6 +503,7 @@ MonoBehaviour:
   testIce: {fileID: 33084381}
   plane: {fileID: 1704726081}
   cube: {fileID: 4535491435453482, guid: 82fe76ecf1b1a37438bba9ab6054f6cb, type: 2}
+  blobPrefab: {fileID: 4331834900913754, guid: 00f5087bd0fb29d41b65a89b12ac181c, type: 2}
 --- !u!4 &1585719710
 Transform:
   m_ObjectHideFlags: 0
