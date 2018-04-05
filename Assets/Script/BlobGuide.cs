@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BlobGuide {
-    private int V = 1600;
+    private int V = 1000;
 
     private Transform _blob;
     private List<Vector3> _path;
@@ -29,23 +29,29 @@ public class BlobGuide {
         DateTime now = DateTime.Now;
         _dt = now.Ticks - _latsTs;
         _latsTs = now.Ticks;
-        //Debug.Log(dt.ToString());
-        _ds = V / _dt;
+        _ds = (float)V / _dt;
+        
         _offset = Vector3.zero;
-        do {
-            _modDir = _modDir==0? _directions[_dirN].magnitude : _modDir;
-            if (_ds < _modDir) {
-                _offset += (_ds / _directions[_dirN].magnitude) * _directions[_dirN];
-                _modDir -= _ds;
-            } else {
-                _offset += (_modDir / _directions[_dirN].magnitude) * _directions[_dirN];
-                _ds -= _modDir;
-                _modDir = 0;
-                _dirN++;
-            }
-            
-        } while (_modDir > 0 && _dirN < _directions.Length);
-        _blob.localPosition += _offset;
+        if (_ds != 0 && _dirN < _directions.Length) {
+            do {
+                _modDir = _modDir == 0 ? _directions[_dirN].magnitude : _modDir;
+                if (_ds < _modDir) {
+                    _offset += (_ds / _directions[_dirN].magnitude) * _directions[_dirN];
+                    _modDir -= _ds;
+                } else {
+                    _offset += (_modDir / _directions[_dirN].magnitude) * _directions[_dirN];
+                    _ds -= _modDir;
+                    _modDir = 0;
+                    _dirN++;
+                }
+                if (_dirN >= _directions.Length) {
+                    Debug.Log("");
+                }
+
+            } while (_modDir > 0 && _dirN < _directions.Length);
+            Debug.Log(_dt.ToString()+"_"+_ds.ToString()+"_"+_offset.magnitude);
+            _blob.localPosition += _offset;
+        }
     }
 
     private void createDirections() {
