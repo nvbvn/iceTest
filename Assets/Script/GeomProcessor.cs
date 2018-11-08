@@ -6,7 +6,7 @@ using UnityEngine;
 public class GeomProcessor {
     public const int MAX_POINTS_COUNT = 300;
 
-    private readonly Vector3 Np = new Vector3(0, 1, 0);
+    private readonly Vector3 Np = Vector3.up;
     private float D = 5.0f;
 
     private Mesh _mesh;

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BlobGuide {
-    private int V = 1000;
+    private int V = 1300;
+    private int a = 50;
 
     private Transform _blob;
     private List<Vector3> _path;
@@ -15,6 +16,10 @@ public class BlobGuide {
     private int _dirN = 0;
     private float _modDir = 0;
     private Vector3 _offset;
+
+    private float _vCurrent = 0;
+    private float _vCurrentMax;
+    private float _a;
 
     public BlobGuide(Transform blob, List<Vector3> path) {
         _blob = blob;
@@ -29,6 +34,8 @@ public class BlobGuide {
         DateTime now = DateTime.Now;
         _dt = now.Ticks - _latsTs;
         _latsTs = now.Ticks;
+
+       // _vCurrentMax = Vector3.Angle(Vector3.up, );
         _ds = (float)V / _dt;
         
         _offset = Vector3.zero;
@@ -38,18 +45,20 @@ public class BlobGuide {
                 if (_ds < _modDir) {
                     _offset += (_ds / _directions[_dirN].magnitude) * _directions[_dirN];
                     _modDir -= _ds;
+                    _ds = 0;
+                    //_modDir = _ds - _modDir;// -= _ds;
                 } else {
                     _offset += (_modDir / _directions[_dirN].magnitude) * _directions[_dirN];
                     _ds -= _modDir;
                     _modDir = 0;
                     _dirN++;
                 }
-                if (_dirN >= _directions.Length) {
+/*                if (_dirN >= _directions.Length) {
                     Debug.Log("");
-                }
+                }*/
 
-            } while (_modDir > 0 && _dirN < _directions.Length);
-            Debug.Log(_dt.ToString()+"_"+_ds.ToString()+"_"+_offset.magnitude);
+            } while (_ds > 0 && _dirN < _directions.Length);
+//            Debug.Log(_dt.ToString()+"_"+_ds.ToString()+"_"+_offset.magnitude);
             _blob.localPosition += _offset;
         }
     }
