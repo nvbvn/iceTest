@@ -54,12 +54,12 @@ public class BlobGuide {
             do {
                 _a = (float)(A * Math.Cos(Vector3.Angle(Vector3.down, _directions[_dirN])*Math.PI/180.0));
                 _ds = _v0 * _dt + _a * _dt * _dt / 2;
-                return;
                 _modDir = _modDir == 0 ? _directions[_dirN].magnitude : _modDir;
                 if (_ds < _modDir) {
                     _offset += (_ds / _directions[_dirN].magnitude) * _directions[_dirN];
                     _modDir -= _ds;
                     _v0 = _v0 + _a * _dt;
+                    _dt = 0;
                     //Debug.Log("_v0=" + _v0);
                     //_modDir = _ds - _modDir;// -= _ds;
                 } else {
