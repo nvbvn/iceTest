@@ -21,6 +21,7 @@ public class BlobGuide {
     private float _vCurrentMax;*/
     private float _a;
     private float _v0 = 0;
+    private float _v = 0;
 
     public BlobGuide(Transform blob, List<Vector3> path) {
         _blob = blob;
@@ -45,31 +46,35 @@ public class BlobGuide {
         _dt = Time.deltaTime;// now.Ticks - _latsTs;
         _latsTs = now.Ticks;
 
-       // _vCurrentMax = Vector3.Angle(Vector3.up, );
-        _ds = (float)V / _dt;
-        
+        // _vCurrentMax = Vector3.Angle(Vector3.up, );
+        //_ds = (float)V / _dt;
+        int qq = 0;
         _offset = Vector3.zero;
         if (_dirN < _directions.Length) {
             do {
                 _a = (float)(A * Math.Cos(Vector3.Angle(Vector3.down, _directions[_dirN])*Math.PI/180.0));
                 _ds = _v0 * _dt + _a * _dt * _dt / 2;
-                
+                return;
                 _modDir = _modDir == 0 ? _directions[_dirN].magnitude : _modDir;
                 if (_ds < _modDir) {
                     _offset += (_ds / _directions[_dirN].magnitude) * _directions[_dirN];
                     _modDir -= _ds;
-                    _ds = 0;
                     _v0 = _v0 + _a * _dt;
                     //Debug.Log("_v0=" + _v0);
                     //_modDir = _ds - _modDir;// -= _ds;
                 } else {
                     _offset += (_modDir / _directions[_dirN].magnitude) * _directions[_dirN];
-                    _ds -= _modDir;
+
+                    _v = Mathf.Sqrt(_v0*_v0 + _a*_modDir);
+                    _dt = _dt - 2 * _modDir / (_v0 + _v);
+                    _v0 = _v;
+
                     _modDir = 0;
                     _dirN++;
                 }
+                qq++;
 
-            } while (_ds > 0 && _dirN < _directions.Length);
+            } while (_dt > 0 && _dirN < _directions.Length && qq<20);
 //            Debug.Log(_dt.ToString()+"_"+_ds.ToString()+"_"+_offset.magnitude);
             _blob.localPosition += _offset;
         }
