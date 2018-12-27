@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlobGuide {
     private float V = 1300;
-    private float A = 2f;
+    private float A = 1f;
 
     private Transform _blob;
     private List<Vector3> _path;
@@ -50,9 +50,12 @@ public class BlobGuide {
         //_ds = (float)V / _dt;
         int qq = 0;
         _offset = Vector3.zero;
+        
         if (_dirN < _directions.Length) {
+            //Debug.Log(" "+_v0+"|"+_a+"|"+ _dirN +"|"+ _directions.Length);
             do {
                 _a = (float)(A * Math.Cos(Vector3.Angle(Vector3.down, _directions[_dirN])*Math.PI/180.0));
+                _a -= _v0 * _v0 *(1+ 2*Mathf.Sin(Vector3.Angle(Vector3.down, _directions[_dirN]) * Mathf.PI / 180))* (1 + 2*Mathf.Sin(Vector3.Angle(Vector3.down, _directions[_dirN]) * Mathf.PI / 180));
                 _ds = _v0 * _dt + _a * _dt * _dt / 2;
                 _modDir = _modDir == 0 ? _directions[_dirN].magnitude : _modDir;
                 if (_ds < _modDir) {
@@ -72,6 +75,7 @@ public class BlobGuide {
                     _modDir = 0;
                     _dirN++;
                 }
+                Vslider.showValue(_v0);
                 qq++;
 
             } while (_dt > 0 && _dirN < _directions.Length && qq<20);
