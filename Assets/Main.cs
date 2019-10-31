@@ -19,6 +19,7 @@ public class Main : MonoBehaviour {
     private MeshCollider plane;
     // Use this for initialization
 
+
     private Vector3[] _vertices;
     private int[] _triangles;
 
@@ -40,20 +41,25 @@ public class Main : MonoBehaviour {
     void Start () {
         Application.targetFrameRate = 60;
 
-/*        string trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpincone.mesh));
-        trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralLow.mesh));
-        trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralMid.mesh));
-        trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(testIce.mesh));
-        Debug.Log(DateTime.Now.ToString());
+        string trisAroundVertex;
+     //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpincone.mesh));
+     //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralLow.mesh));
+     //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralMid.mesh));
+     //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(testIce.mesh));
+       // Debug.Log(DateTime.Now.ToString());
+        
+        int[] _trilinks;
+        String str;
+     //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpincone.mesh);
+     //   str = String.Join(",", _trilinks);
+     //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralLow.mesh);
+     //   str = String.Join(",", _trilinks);
+     //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralMid.mesh);
+     //   str = String.Join(",", _trilinks);
+     //   _trilinks = GeomPreprocessor.CreateTrilinks(testIce.mesh);
+       // str = String.Join(",", _trilinks);
 
-        _trilinks = GeomPreprocessor.CreateTrilinks(icSpincone.mesh);
-        String str = String.Join(",", _trilinks);
-        _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralLow.mesh);
-        str = String.Join(",", _trilinks);
-        _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralMid.mesh);
-        str = String.Join(",", _trilinks);
-
-        Debug.Log(DateTime.Now.ToString());*/
+       // Debug.Log(DateTime.Now.ToString());
 
 
         TextAsset txt = Resources.Load("Trilinks/spincone") as TextAsset;
@@ -142,7 +148,7 @@ public class Main : MonoBehaviour {
         List<Vector3> points;
 
    	    RaycastHit hit;
-        
+        Debug.LogError(Input.mousePosition.x+", "+ Input.mousePosition.y+", "+ Input.mousePosition.z);
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
         MeshCollider meshCollider = hit.collider as MeshCollider;
@@ -167,22 +173,22 @@ public class Main : MonoBehaviour {
 
         points = targetProcessor.GetEdgeIntersectPoints(targetObject.InverseTransformPoint(hit.point), hit.triangleIndex);
 
-        
-        
-        //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-        
-/*        MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
-        //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
-        points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-1.349147f, 0.7382534f, -0.1626387f)), 322);
-        
-        MeshCollider meshCollider = icSpiralLow.GetComponent<MeshCollider>();
-        points = _testGeomProcessor_spiralLow.GetEdgeIntersectPoints(icSpiralLow.transform.InverseTransformPoint(new Vector3(2.927554f, 0.9878784f, -0.008455698f)), 9092);
-  */      
 
- /*       MeshCollider meshCollider = icSpiralMid.GetComponent<MeshCollider>();
-        //points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(new Vector3(1.112241f, 0.9138252f, -0.04689942f)), 15931);
-        points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(new Vector3(1.002526f, 0.9781381f, -0.05147566f)), 16524);
-*/
+
+        //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+
+        /*        MeshCollider meshCollider = testIce.GetComponent<MeshCollider>();
+                //points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-0.7801354f, 0.1426054f, -0.2359176f)), 202);
+                points = _testGeomProcessor_testIce.GetEdgeIntersectPoints(testIce.transform.InverseTransformPoint(new Vector3(-1.349147f, 0.7382534f, -0.1626387f)), 322);
+
+                MeshCollider meshCollider = icSpiralLow.GetComponent<MeshCollider>();
+                points = _testGeomProcessor_spiralLow.GetEdgeIntersectPoints(icSpiralLow.transform.InverseTransformPoint(new Vector3(2.927554f, 0.9878784f, -0.008455698f)), 9092);
+          */
+
+        /*       MeshCollider meshCollider = icSpiralMid.GetComponent<MeshCollider>();
+               //points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(new Vector3(1.112241f, 0.9138252f, -0.04689942f)), 15931);
+               points = _testGeomProcessor_spiralMid.GetEdgeIntersectPoints(icSpiralMid.transform.InverseTransformPoint(new Vector3(1.002526f, 0.9781381f, -0.05147566f)), 16524);
+       */
         Transform cb;
         while (points.Count > cubes.Count) {
             cb = Instantiate(cube, new Vector3(), Quaternion.identity);
@@ -194,7 +200,7 @@ public class Main : MonoBehaviour {
             cubes[i].SetParent(targetObject);
 
             if (float.IsInfinity(points[i].x)) {
-                Debug.Log("!!!"+meshCollider.name+": ("+hit.point.x+"; "+hit.point.y+"; "+hit.point.z+")|"+hit.triangleIndex);
+                Debug.LogError("!!!"+meshCollider.name+": ("+hit.point.x+"; "+hit.point.y+"; "+hit.point.z+")|"+hit.triangleIndex);
             }
             cubes[i].transform.localPosition = points[i];
         }

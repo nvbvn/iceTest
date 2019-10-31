@@ -53,9 +53,9 @@ public class GeomProcessor {
         List<int> trianglesAroundVLowThan;
         do {
             triN = 3 * startTriangle;
-            if (res.Count == 160) {
+            if (res.Count == 2) {
                 //traceTriangle(startTriangle, new Color(0.5f, 0, 0));
-//                Debug.Log("");
+                //Debug.Log("");
             }
             if (startPoint == _vertices[vN = _triangles[triN]] || startPoint == _vertices[vN = _triangles[triN + 1]] || startPoint == _vertices[vN = _triangles[triN + 2]]) {
                // trianglesAroundV = getTrianglesAroundVertex(startPoint, previousTris, out vNormal);
