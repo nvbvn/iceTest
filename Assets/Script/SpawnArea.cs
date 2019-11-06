@@ -15,8 +15,12 @@ public class SpawnArea : MonoBehaviour
     [HideInInspector]
     public  MeshFilter targetMesh;
 
+    [HideInInspector]
+    public Icecream ice;
+
     private void Reset() {
         targetMesh = GetComponent<MeshFilter>();
+        ice = GetComponent<Icecream>();
     }
 
     // Start is called before the first frame update

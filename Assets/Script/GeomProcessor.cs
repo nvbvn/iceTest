@@ -33,6 +33,31 @@ public class GeomProcessor {
         normals = mesh.normals;
     }
 
+    public GeomProcessor(Mesh mesh, TextAsset trilinks_src, TextAsset trisAroundVertex_src, Transform transform) {
+        D = mesh.bounds.min.y - 2;
+        _mesh = mesh;
+        _transform = transform;
+        _trilinks = Array.ConvertAll(trilinks_src.text.Split(','), int.Parse); ;
+        _trisAroundVertex = createTav(trisAroundVertex_src.text);
+        _vertices = mesh.vertices;
+        _triangles = mesh.triangles;
+        tangents = mesh.tangents;
+        normals = mesh.normals;
+    }
+
+    private int[][] createTav(string src) {
+        string[] temp = src.Split(',');
+        int l = temp.Length;
+        int[][] res = new int[l][];
+        for (int i=0; i<l; i++) {
+            res[i] = Array.ConvertAll(temp[i].Split(';'), int.Parse);
+        }
+        return res;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     public List<Vector3> GetEdgeIntersectPoints(Vector3 startPoint, int startTriangle) {
         /*List<Vector3>*/ res = new List<Vector3>();
         res.Add(startPoint);

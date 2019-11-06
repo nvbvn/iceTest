@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEditor.UIElements;
 using UnityEditor;
 
 [CustomEditor(typeof(SpawnArea))]
@@ -15,6 +17,21 @@ public class SpawnAreaEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 
+
+    private VisualElement _root;
+    private bool b = false;
+    public override VisualElement CreateInspectorGUI() {
+        VisualElement customInspector = new VisualElement();
+        _root = customInspector;
+
+        Button btn = new Button();
+        btn.text = "Start Redo";
+        customInspector.Add(btn);
+
+        return customInspector;
+    }
+    
+
     private void OnSceneGUI() {
         SpawnArea spawnArea = target as SpawnArea;
         RaycastHit hit;
@@ -25,7 +42,13 @@ public class SpawnAreaEditor : Editor
             return;
             Debug.LogError("?");
         }
-
+        if (hit.triangleIndex == 140 && !b) {
+            b = true;
+            Button btn = new Button();
+            btn.text = "QQQ";
+            _root.Add(btn);
+        }
+        //Debug.LogError(hit.triangleIndex);
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
@@ -36,14 +59,15 @@ public class SpawnAreaEditor : Editor
         {
             targetObject = spawnArea.targetMesh.transform;
             Handles.color = Color.red;
-            //Handles.DrawWireCube(hit.point, new Vector3(0.1f, 0.1f, 0.1f));
-            Handles.PositionHandle(hit.point, Quaternion.identity);
+            Handles.DrawWireCube(hit.point, new Vector3(0.01f, 0.01f, 0.01f));
+            spawnArea.ice.GetBlobPath(spawnArea.gameObject.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+            //Handles.PositionHandle(hit.point, Quaternion.identity);
             //Gizmos.DrawSphere(hit.point, 0.05f);
-            Debug.LogError(hit.point.x + ", " + hit.point.y + ", " + hit.point.z);
+ //           Debug.LogError(hit.point.x + ", " + hit.point.y + ", " + hit.point.z);
         }
     }
 
-    [DrawGizmo(GizmoType.Selected)]
+/*    [DrawGizmo(GizmoType.Selected)]
     static void DrawGizmosSelected(SpawnArea spawnArea, GizmoType gizmoType) {
         Gizmos.color = Color.red;
         RaycastHit hit;
@@ -65,6 +89,6 @@ public class SpawnAreaEditor : Editor
             Gizmos.DrawSphere(hit.point, 0.05f);
             Debug.LogError(hit.point.x+", "+hit.point.y+", "+hit.point.z);
         }
-    }
+    }*/
 
 }

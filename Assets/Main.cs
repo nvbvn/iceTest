@@ -13,9 +13,6 @@ public class Main : MonoBehaviour {
     private MeshFilter icSpincone;
 
     [SerializeField]
-    private MeshFilter testIce;
-
-    [SerializeField]
     private MeshCollider plane;
     // Use this for initialization
 
@@ -27,7 +24,6 @@ public class Main : MonoBehaviour {
     private GeomProcessor _testGeomProcessor_spincone;
     private GeomProcessor _testGeomProcessor_spiralLow;
     private GeomProcessor _testGeomProcessor_spiralMid;
-    private GeomProcessor _testGeomProcessor_testIce;
     [SerializeField]
     private Transform cube;
     [SerializeField]
@@ -68,20 +64,16 @@ public class Main : MonoBehaviour {
         int[] trilinks_spiralLow = Array.ConvertAll(txt.text.Split(','), int.Parse);
         txt = Resources.Load("Trilinks/spiralMid") as TextAsset;
         int[] trilinks_spiralMid = Array.ConvertAll(txt.text.Split(','), int.Parse);
-        txt = Resources.Load("Trilinks/testIce") as TextAsset;
-        int[] trilinks_testIce = Array.ConvertAll(txt.text.Split(','), int.Parse);
 
         int[][] tav_spincone = createTav("TrisAroundVertex/spincone");
         int[][] tav_spiralLow = createTav("TrisAroundVertex/spiralLow");
         int[][] tav_spiralMid = createTav("TrisAroundVertex/spiralMid");
-        int[][] tav_testIce = createTav("TrisAroundVertex/testIce");
 
         //TimeSpan ts1 = TimeSpan.FromTicks(DateTime.Now.Ticks);
         //Debug.Log(DateTime.Now.ToString());
         _testGeomProcessor_spincone = new GeomProcessor(icSpincone.mesh, trilinks_spincone, tav_spincone, icSpincone.transform);
         _testGeomProcessor_spiralLow = new GeomProcessor(icSpiralLow.mesh, trilinks_spiralLow, tav_spiralLow, icSpiralLow.transform);
         _testGeomProcessor_spiralMid = new GeomProcessor(icSpiralMid.mesh, trilinks_spiralMid, tav_spiralMid, icSpiralMid.transform);
-        _testGeomProcessor_testIce = new GeomProcessor(testIce.mesh, trilinks_testIce, tav_testIce, testIce.transform);
         TimeSpan ts2 = TimeSpan.FromTicks(DateTime.Now.Ticks);
         //Debug.Log((ts2 - ts1).Milliseconds);
         //Debug.Log(DateTime.Now.ToString());
@@ -155,8 +147,8 @@ public class Main : MonoBehaviour {
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
 
-        Transform targetObject;
-        GeomProcessor targetProcessor;
+        Transform targetObject = null;
+        GeomProcessor targetProcessor = null;
         if (meshCollider == icSpincone.GetComponent<MeshCollider>()) {
             targetObject = icSpincone.transform;
             targetProcessor = _testGeomProcessor_spincone;
@@ -166,9 +158,10 @@ public class Main : MonoBehaviour {
         } else if (meshCollider == icSpiralMid.GetComponent<MeshCollider>()) {
             targetObject = icSpiralMid.transform;
             targetProcessor = _testGeomProcessor_spiralMid;
-        } else {
-            targetObject = testIce.transform;
-            targetProcessor = _testGeomProcessor_testIce;
+        }
+
+        if (targetObject == null) {
+            return;
         }
 
         points = targetProcessor.GetEdgeIntersectPoints(targetObject.InverseTransformPoint(hit.point), hit.triangleIndex);
