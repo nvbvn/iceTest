@@ -2,24 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnArea : MonoBehaviour
+public class SpawnAreaCreator : MonoBehaviour
 {
-    [SerializeField]
-    private TextAsset triLinks;
-    [SerializeField]
-    private TextAsset trisAroundVertex;
-
-    [SerializeField]
-    private List<int> spawnTriangles;
-
-    [HideInInspector]
-    public  MeshFilter targetMesh;
 
     [HideInInspector]
     public Icecream ice;
 
     private void Reset() {
-        targetMesh = GetComponent<MeshFilter>();
         ice = GetComponent<Icecream>();
     }
 

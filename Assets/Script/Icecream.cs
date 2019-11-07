@@ -6,9 +6,9 @@ public class Icecream : MonoBehaviour
 {
 
     [SerializeField]
-    private TextAsset trilinks;
+    public TextAsset trilinks;
     [SerializeField]
-    private TextAsset trisAroundVertex;
+    public TextAsset trisAroundVertex;
 
     private Mesh _mesh;
     private GeomProcessor _geomProcessor;

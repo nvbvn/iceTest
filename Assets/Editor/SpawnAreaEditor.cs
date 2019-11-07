@@ -5,21 +5,20 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UnityEditor;
 
-[CustomEditor(typeof(SpawnArea))]
+[CustomEditor(typeof(SpawnAreaCreator))]
 public class SpawnAreaEditor : Editor
 {
-    public override void OnInspectorGUI() {
+   /* public override void OnInspectorGUI() {
         serializedObject.Update();
         DrawDefaultInspector();
         //EditorGUILayout.PropertyField(lookAtPoint);
         //EditorGUILayout.PropertyField(serializedObject.FindProperty("qq"));
         EditorGUILayout.HelpBox("This is a help box", MessageType.Error);
         serializedObject.ApplyModifiedProperties();
-    }
+    }*/
 
 
     private VisualElement _root;
-    private bool b = false;
     public override VisualElement CreateInspectorGUI() {
         VisualElement customInspector = new VisualElement();
         _root = customInspector;
@@ -30,64 +29,74 @@ public class SpawnAreaEditor : Editor
 
         return customInspector;
     }
-    
+
+
+    private static Icecream _icecream;
+    private static Transform _transform;
+    private static GeomProcessor _geomProcessor;
+    private static Mesh _mesh;
+    private static MeshFilter _meshFilter;
+    private static Renderer _renderer;
+    private static MeshCollider _meshCollider;
+    private void OnEnable() {
+        SpawnAreaCreator spawnArea = target as SpawnAreaCreator;
+        _icecream = spawnArea.GetComponent<Icecream>();
+        _transform = spawnArea.GetComponent<Transform>();
+        _mesh = spawnArea.GetComponent<MeshFilter>().mesh;
+        _meshFilter = spawnArea.GetComponent<MeshFilter>();
+        _meshCollider = spawnArea.GetComponent<MeshCollider>();
+        _renderer = spawnArea.GetComponent<Renderer>();
+        _geomProcessor = new GeomProcessor(_mesh, _icecream.trilinks, _icecream.trisAroundVertex, _icecream.gameObject.transform);
+
+    }
 
     private void OnSceneGUI() {
-        SpawnArea spawnArea = target as SpawnArea;
         RaycastHit hit;
-        // Debug.LogError(Event.current.mousePosition.x+", "+ Event.current.mousePosition.y);
         Vector2 rayPoint = new Vector2(Event.current.mousePosition.x, SceneView.currentDrawingSceneView.camera.pixelHeight - Event.current.mousePosition.y);
-        if (!Physics.Raycast(SceneView.currentDrawingSceneView.camera.ScreenPointToRay(rayPoint), out hit))
-        {
+        if (!Physics.Raycast(SceneView.currentDrawingSceneView.camera.ScreenPointToRay(rayPoint), out hit)) {
             return;
-            Debug.LogError("?");
         }
-        if (hit.triangleIndex == 140 && !b) {
-            b = true;
-            Button btn = new Button();
-            btn.text = "QQQ";
-            _root.Add(btn);
-        }
-        //Debug.LogError(hit.triangleIndex);
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
 
-        Transform targetObject;
-        GeomProcessor targetProcessor;
-        if (meshCollider == spawnArea.targetMesh.GetComponent<MeshCollider>())
-        {
-            targetObject = spawnArea.targetMesh.transform;
+        if (meshCollider == _meshCollider) {
             Handles.color = Color.red;
             Handles.DrawWireCube(hit.point, new Vector3(0.01f, 0.01f, 0.01f));
-            spawnArea.ice.GetBlobPath(spawnArea.gameObject.transform.InverseTransformPoint(hit.point), hit.triangleIndex);
-            //Handles.PositionHandle(hit.point, Quaternion.identity);
-            //Gizmos.DrawSphere(hit.point, 0.05f);
- //           Debug.LogError(hit.point.x + ", " + hit.point.y + ", " + hit.point.z);
+            List<Vector3> points = _geomProcessor.GetEdgeIntersectPoints(_transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+            // points[0].
+            int l = points.Count;
+            Vector3[] vp = new Vector3[l];
+            for (int i=0; i<l; i++) {
+                vp[i] = _transform.TransformPoint(points[i]);
+            }
+            Handles.DrawAAPolyLine(vp);
         }
     }
 
 /*    [DrawGizmo(GizmoType.Selected)]
-    static void DrawGizmosSelected(SpawnArea spawnArea, GizmoType gizmoType) {
+    static void DrawGizmosSelected(SpawnAreaCreator spawnArea, GizmoType gizmoType) {
         Gizmos.color = Color.red;
         RaycastHit hit;
-        Vector2 rayPoint = new Vector2(Event.current.mousePosition.x, SceneView.currentDrawingSceneView.camera.pixelHeight-Event.current.mousePosition.y);
-        if (!Physics.Raycast(SceneView.currentDrawingSceneView.camera.ScreenPointToRay(rayPoint), out hit))
-        {
+        Vector2 rayPoint = new Vector2(Event.current.mousePosition.x, SceneView.currentDrawingSceneView.camera.pixelHeight - Event.current.mousePosition.y);
+        if (!Physics.Raycast(SceneView.currentDrawingSceneView.camera.ScreenPointToRay(rayPoint), out hit)) {
             return;
-            Debug.LogError("?");
         }
-
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null)
             return;
 
-        Transform targetObject;
-        GeomProcessor targetProcessor;
-        if (meshCollider == spawnArea.targetMesh.GetComponent<MeshCollider>()) {
-            targetObject = spawnArea.targetMesh.transform;
-            Gizmos.DrawSphere(hit.point, 0.05f);
-            Debug.LogError(hit.point.x+", "+hit.point.y+", "+hit.point.z);
+        if (meshCollider == _meshCollider) {
+            Gizmos.DrawSphere(hit.point, 0.025f);
+            List<Vector3> points = _geomProcessor.GetEdgeIntersectPoints(_transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+            // points[0].
+            Vector3 t;
+            int l = points.Count;
+            for (int i=1; i<l; i++) {
+                Gizmos.DrawCube(t = _transform.TransformPoint(points[i]), new Vector3(0.02f, 0.02f, 0.02f));
+                Gizmos.DrawLine(_transform.TransformPoint(points[i-1]), t);
+            }
+            
         }
     }*/
 
