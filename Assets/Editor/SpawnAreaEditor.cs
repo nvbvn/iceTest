@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -23,26 +24,37 @@ public class SpawnAreaEditor : Editor
         VisualElement customInspector = new VisualElement();
         _root = customInspector;
 
-        Button btn = new Button();
+        Button btn = new Button(clickListener);
         btn.text = "Start Redo";
         customInspector.Add(btn);
 
         return customInspector;
     }
 
+    private void clickListener() {
+        _uv = new Vector2[_mesh.vertices.Length];
+        int l = _uv.Length;
+        UnityEngine.Random.InitState(l);
+        for (int i=0; i<l; i++) {
+            _uv[i] = new Vector2(0.99f, 0.99f/*UnityEngine.Random.value, UnityEngine.Random.value*/);
+        }
+        Debug.LogError(_uv.Length);
+        _mesh.uv = _uv;
+    }
+    private Vector2[] _uv;
 
-    private static Icecream _icecream;
-    private static Transform _transform;
-    private static GeomProcessor _geomProcessor;
-    private static Mesh _mesh;
-    private static MeshFilter _meshFilter;
-    private static Renderer _renderer;
-    private static MeshCollider _meshCollider;
+    private Icecream _icecream;
+    private Transform _transform;
+    private GeomProcessor _geomProcessor;
+    private Mesh _mesh;
+    private MeshFilter _meshFilter;
+    private Renderer _renderer;
+    private MeshCollider _meshCollider;
     private void OnEnable() {
         SpawnAreaCreator spawnArea = target as SpawnAreaCreator;
         _icecream = spawnArea.GetComponent<Icecream>();
         _transform = spawnArea.GetComponent<Transform>();
-        _mesh = spawnArea.GetComponent<MeshFilter>().mesh;
+        _mesh = spawnArea.GetComponent<MeshFilter>().sharedMesh;
         _meshFilter = spawnArea.GetComponent<MeshFilter>();
         _meshCollider = spawnArea.GetComponent<MeshCollider>();
         _renderer = spawnArea.GetComponent<Renderer>();
@@ -61,6 +73,7 @@ public class SpawnAreaEditor : Editor
             return;
 
         if (meshCollider == _meshCollider) {
+            //_mesh.triangles[hit.triangleIndex]
             Handles.color = Color.red;
             Handles.DrawWireCube(hit.point, new Vector3(0.01f, 0.01f, 0.01f));
             List<Vector3> points = _geomProcessor.GetEdgeIntersectPoints(_transform.InverseTransformPoint(hit.point), hit.triangleIndex);

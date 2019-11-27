@@ -71,9 +71,9 @@ public class Main : MonoBehaviour {
 
         //TimeSpan ts1 = TimeSpan.FromTicks(DateTime.Now.Ticks);
         //Debug.Log(DateTime.Now.ToString());
-        _testGeomProcessor_spincone = new GeomProcessor(icSpincone.mesh, trilinks_spincone, tav_spincone, icSpincone.transform);
-        _testGeomProcessor_spiralLow = new GeomProcessor(icSpiralLow.mesh, trilinks_spiralLow, tav_spiralLow, icSpiralLow.transform);
-        _testGeomProcessor_spiralMid = new GeomProcessor(icSpiralMid.mesh, trilinks_spiralMid, tav_spiralMid, icSpiralMid.transform);
+        _testGeomProcessor_spincone = new GeomProcessor(icSpincone.sharedMesh, trilinks_spincone, tav_spincone, icSpincone.transform);
+        _testGeomProcessor_spiralLow = new GeomProcessor(icSpiralLow.sharedMesh, trilinks_spiralLow, tav_spiralLow, icSpiralLow.transform);
+        _testGeomProcessor_spiralMid = new GeomProcessor(icSpiralMid.sharedMesh, trilinks_spiralMid, tav_spiralMid, icSpiralMid.transform);
         TimeSpan ts2 = TimeSpan.FromTicks(DateTime.Now.Ticks);
         //Debug.Log((ts2 - ts1).Milliseconds);
         //Debug.Log(DateTime.Now.ToString());

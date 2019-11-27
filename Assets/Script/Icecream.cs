@@ -14,7 +14,7 @@ public class Icecream : MonoBehaviour
     private GeomProcessor _geomProcessor;
 
     void Start() {
-        _mesh = GetComponent<MeshFilter>().mesh;
+        _mesh = GetComponent<MeshFilter>().sharedMesh;
         _geomProcessor = new GeomProcessor(_mesh, trilinks, trisAroundVertex, gameObject.transform);
     }
 

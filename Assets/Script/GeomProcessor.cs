@@ -292,20 +292,20 @@ public class GeomProcessor {
     private void traceTriangle(int triangleIndex, Color color) {
         int triN = triangleIndex * 3;
         Vector3 a = _vertices[_triangles[triN]];
-        Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN]]) + 0.1f*normals[_triangles[triN]], color);
+      //  Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN]]), _transform.TransformPoint(_vertices[_triangles[triN]]) + 0.1f*normals[_triangles[triN]], color);
         //Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN]]), normals[_triangles[triN]], color);
         Vector3 a1 = _vertices[_triangles[triN+1]];
-        Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN + 1]]), _transform.TransformPoint(_vertices[_triangles[triN + 1]])+ 0.1f*normals[_triangles[triN + 1]], color);
+      //  Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN + 1]]), _transform.TransformPoint(_vertices[_triangles[triN + 1]])+ 0.1f*normals[_triangles[triN + 1]], color);
         //Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN + 1]]), normals[_triangles[triN + 1]], color);
         Vector3 a2 = _vertices[_triangles[triN+2]];
-        Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN + 2]]), _transform.TransformPoint(_vertices[_triangles[triN + 2]])+ 0.1f*normals[_triangles[triN + 2]], color);
+      //  Debug.DrawLine(_transform.TransformPoint(_vertices[_triangles[triN + 2]]), _transform.TransformPoint(_vertices[_triangles[triN + 2]])+ 0.1f*normals[_triangles[triN + 2]], color);
         //Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN + 2]]), normals[_triangles[triN + 2]], color);
     }
 
     private List<int> getLowerTrianglesAroundVertex(int[] tris, Vector3 vert) {
         List<int> res = new List<int>();
         int triN;
-        Debug.DrawRay(_transform.TransformPoint(vert), new Vector3(0, 0, -1), new Color(0.5f, 0.5f, 0.5f));
+        //Debug.DrawRay(_transform.TransformPoint(vert), new Vector3(0, 0, -1), new Color(0.5f, 0.5f, 0.5f));
         for (int i=0; i<tris.Length; i++) {
             triN = tris[i] * 3;
             //Debug.DrawRay(_transform.TransformPoint(_vertices[_triangles[triN]]), new Vector3(0, 0, -1), new Color(0, 1, 0));
