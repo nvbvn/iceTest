@@ -73,6 +73,8 @@ public class SpawnAreaEditor : Editor
             return;
 
         if (meshCollider == _meshCollider) {
+            _uv[_mesh.triangles[hit.triangleIndex]] = _uv[_mesh.triangles[hit.triangleIndex+1]] = _uv[_mesh.triangles[hit.triangleIndex+2]] = new Vector2(0.749f, 0.749f);
+            _mesh.uv = _uv;
             //_mesh.triangles[hit.triangleIndex]
             Handles.color = Color.red;
             Handles.DrawWireCube(hit.point, new Vector3(0.01f, 0.01f, 0.01f));
