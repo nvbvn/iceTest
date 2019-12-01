@@ -9,6 +9,13 @@ using UnityEditor;
 [CustomEditor(typeof(SpawnAreaCreator))]
 public class SpawnAreaEditor : Editor
 {
+    private const string REDO_BTN_NAME_OFF = "Start Redo";
+    private const string REDO_BTN_NAME_ON = "Stop Redo";
+    private bool _isRedoOn = false;
+    private Material _nativeMaterial;
+    private Vector2[] _nativeUV;
+    private bool[] _selectedTriangles;
+
    /* public override void OnInspectorGUI() {
         serializedObject.Update();
         DrawDefaultInspector();
@@ -20,27 +27,52 @@ public class SpawnAreaEditor : Editor
 
 
     private VisualElement _root;
+    private Button _redoBtn;
     public override VisualElement CreateInspectorGUI() {
         VisualElement customInspector = new VisualElement();
         _root = customInspector;
 
-        Button btn = new Button(clickListener);
-        btn.text = "Start Redo";
-        customInspector.Add(btn);
+        _redoBtn = new Button(clickListener);
+        _redoBtn.text = REDO_BTN_NAME_OFF;
+        customInspector.Add(_redoBtn);
+
+        Foldout fo = new Foldout();
+        customInspector.Add(fo);
+        Label notice = new Label("SHIFT: add triangle\nCTRL: remove triangle");
+        fo.Add(notice);
+      //  TextField tf = new TextField()
 
         return customInspector;
     }
 
     private void clickListener() {
+        _isRedoOn = !_isRedoOn;
+        if (_isRedoOn) {
+            _redoBtn.text = REDO_BTN_NAME_ON;
+            setRedoState();
+        } else {
+            _redoBtn.text = REDO_BTN_NAME_OFF;
+            setNativeState();
+        }
+    }
+
+    private void setRedoState() {
+        //   _nativeMaterial = target.gameO
+        _selectedTriangles = new bool[_mesh.triangles.Length/3];
+        Debug.LogError(_selectedTriangles[1]+"|");
         _uv = new Vector2[_mesh.vertices.Length];
         int l = _uv.Length;
         UnityEngine.Random.InitState(l);
         for (int i=0; i<l; i++) {
             _uv[i] = new Vector2(0.99f, 0.99f/*UnityEngine.Random.value, UnityEngine.Random.value*/);
         }
-        Debug.LogError(_uv.Length);
         _mesh.uv = _uv;
     }
+
+    private void setNativeState() { 
+    
+    }
+
     private Vector2[] _uv;
 
     private Icecream _icecream;
@@ -73,8 +105,7 @@ public class SpawnAreaEditor : Editor
             return;
 
         if (meshCollider == _meshCollider) {
-            _uv[_mesh.triangles[hit.triangleIndex]] = _uv[_mesh.triangles[hit.triangleIndex+1]] = _uv[_mesh.triangles[hit.triangleIndex+2]] = new Vector2(0.749f, 0.749f);
-            _mesh.uv = _uv;
+            fillingTriangle(hit.triangleIndex);
             //_mesh.triangles[hit.triangleIndex]
             Handles.color = Color.red;
             Handles.DrawWireCube(hit.point, new Vector3(0.01f, 0.01f, 0.01f));
@@ -86,6 +117,35 @@ public class SpawnAreaEditor : Editor
                 vp[i] = _transform.TransformPoint(points[i]);
             }
             Handles.DrawAAPolyLine(vp);
+        }
+    }
+
+    private void fillingTriangle(int triangleIndex) { 
+        if (_isRedoOn) {
+            if (Event.current.shift) {
+                fillAsSelected(triangleIndex);
+            } else if (Event.current.control) {
+                fillAsNonselected(triangleIndex);
+            }
+            
+        }
+    }
+
+    private void fillAsSelected(int triangleIndex) {
+        if (!_selectedTriangles[triangleIndex]) {
+            Debug.LogError(triangleIndex);
+            _uv[_mesh.triangles[3 * triangleIndex]] = _uv[_mesh.triangles[3 * triangleIndex + 1]] = _uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.749f, 0.749f);
+            _mesh.uv = _uv;
+            _selectedTriangles[triangleIndex] = true;
+        }
+    }
+
+    private void fillAsNonselected(int triangleIndex) {
+        if (_selectedTriangles[triangleIndex]) {
+            Debug.LogError("-"+triangleIndex);
+            _uv[_mesh.triangles[3 * triangleIndex]] = _uv[_mesh.triangles[3 * triangleIndex + 1]] = _uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.99f, 0.99f);
+            _mesh.uv = _uv;
+            _selectedTriangles[triangleIndex] = false;
         }
     }
 

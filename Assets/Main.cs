@@ -140,7 +140,7 @@ public class Main : MonoBehaviour {
         List<Vector3> points;
 
    	    RaycastHit hit;
-        Debug.LogError(Input.mousePosition.x+", "+ Input.mousePosition.y+", "+ Input.mousePosition.z);
+    //    Debug.LogError(Input.mousePosition.x+", "+ Input.mousePosition.y+", "+ Input.mousePosition.z);
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             return;
         MeshCollider meshCollider = hit.collider as MeshCollider;
