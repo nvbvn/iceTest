@@ -10,6 +10,9 @@ public class Icecream : MonoBehaviour
     [SerializeField]
     public TextAsset trisAroundVertex;
 
+    [SerializeField]
+    public int[] spawnTriangles;
+
     private Mesh _mesh;
     private GeomProcessor _geomProcessor;
 

@@ -16,6 +16,14 @@ public class SpawnAreaEditor : Editor
     private Vector2[] _nativeUV;
     private bool[] _selectedTriangles;
 
+    private static Material s_redoMaterial = null;
+    private static Material s_getRedoMaterial() {
+        if (s_redoMaterial == null) {
+            s_redoMaterial = Resources.Load<Material>("Materials/ForSpawnAreaCreator");
+        }
+        return s_redoMaterial;
+    }
+
    /* public override void OnInspectorGUI() {
         serializedObject.Update();
         DrawDefaultInspector();
@@ -47,6 +55,7 @@ public class SpawnAreaEditor : Editor
 
     private void clickListener() {
         _isRedoOn = !_isRedoOn;
+
         if (_isRedoOn) {
             _redoBtn.text = REDO_BTN_NAME_ON;
             setRedoState();
@@ -57,20 +66,34 @@ public class SpawnAreaEditor : Editor
     }
 
     private void setRedoState() {
-        //   _nativeMaterial = target.gameO
+        _nativeMaterial = _renderer.sharedMaterial;
+        _nativeUV = _mesh.uv;
         _selectedTriangles = new bool[_mesh.triangles.Length/3];
-        Debug.LogError(_selectedTriangles[1]+"|");
         _uv = new Vector2[_mesh.vertices.Length];
         int l = _uv.Length;
-        UnityEngine.Random.InitState(l);
+        //UnityEngine.Random.InitState(l);
         for (int i=0; i<l; i++) {
             _uv[i] = new Vector2(0.99f, 0.99f/*UnityEngine.Random.value, UnityEngine.Random.value*/);
         }
+        if (_icecream.spawnTriangles != null) {
+            foreach (int n in _icecream.spawnTriangles) {
+                fillAsSelected(n);
+            }
+        }
+        _renderer.material = s_getRedoMaterial();
         _mesh.uv = _uv;
     }
 
-    private void setNativeState() { 
-    
+    private void setNativeState() {
+        List<int> selTris = new List<int>();
+        for (int i=0; i<_selectedTriangles.Length; i++) {
+            if (_selectedTriangles[i]) {
+                selTris.Add(i);
+            }
+        }
+        _icecream.spawnTriangles = selTris.Count > 0 ? selTris.ToArray() : null;
+        _renderer.material = _nativeMaterial;
+        _mesh.uv = _nativeUV;
     }
 
     private Vector2[] _uv;
@@ -133,7 +156,7 @@ public class SpawnAreaEditor : Editor
 
     private void fillAsSelected(int triangleIndex) {
         if (!_selectedTriangles[triangleIndex]) {
-            Debug.LogError(triangleIndex);
+          //  Debug.LogError(triangleIndex);
             _uv[_mesh.triangles[3 * triangleIndex]] = _uv[_mesh.triangles[3 * triangleIndex + 1]] = _uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.749f, 0.749f);
             _mesh.uv = _uv;
             _selectedTriangles[triangleIndex] = true;
@@ -142,7 +165,7 @@ public class SpawnAreaEditor : Editor
 
     private void fillAsNonselected(int triangleIndex) {
         if (_selectedTriangles[triangleIndex]) {
-            Debug.LogError("-"+triangleIndex);
+        //    Debug.LogError("-"+triangleIndex);
             _uv[_mesh.triangles[3 * triangleIndex]] = _uv[_mesh.triangles[3 * triangleIndex + 1]] = _uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.99f, 0.99f);
             _mesh.uv = _uv;
             _selectedTriangles[triangleIndex] = false;
