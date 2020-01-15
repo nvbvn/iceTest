@@ -153,7 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12bd3e077d962a948aeeee48a6a7eabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ice: {fileID: 33084385}
 --- !u!114 &33084384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,10 +194,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: spiral
       objectReference: {fileID: 0}
-    - target: {fileID: 3300000, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 832497742}
+    - target: {fileID: 100002, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.012
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.1939759
@@ -231,18 +234,14 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
-    - target: {fileID: 400000, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.012
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2100000, guid: 5649839ed08821340a92497d74116cce, type: 3}
+    - target: {fileID: 3300000, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 832497742}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
 --- !u!1 &106002750
@@ -1037,7 +1036,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12bd3e077d962a948aeeee48a6a7eabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ice: {fileID: 0}
 --- !u!64 &932026617
 MeshCollider:
   m_ObjectHideFlags: 0

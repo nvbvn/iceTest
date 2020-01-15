@@ -5,11 +5,12 @@ using UnityEngine;
 public class SpawnAreaCreator : MonoBehaviour
 {
 
-    [HideInInspector]
-    public Icecream ice;
+   // [HideInInspector]
+   // public Icecream ice;
 
     private void Reset() {
-        ice = GetComponent<Icecream>();
+        Debug.LogError("SpawnAreaCreator Reset");
+      //  ice = GetComponent<Icecream>();
     }
 
     // Start is called before the first frame update

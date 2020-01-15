@@ -9,12 +9,15 @@ using UnityEditor;
 [CustomEditor(typeof(SpawnAreaCreator))]
 public class SpawnAreaEditor : Editor
 {
-    private const string REDO_BTN_NAME_OFF = "Start Redo";
-    private const string REDO_BTN_NAME_ON = "Stop Redo";
-    private bool _isRedoOn = false;
-    private Material _nativeMaterial;
-    private Vector2[] _nativeUV;
-    private bool[] _selectedTriangles;
+    private const string EDIT_BTN_NAME_OFF = "Start Redo";
+    private const string EDIT_BTN_NAME_ON = "Stop Redo";
+
+    private static bool _isRedoOn = false;
+    private static Mesh _lastProcessedMesh = null;
+    private static Material _nativeMaterial;
+    private static Vector2[] _nativeUV;
+
+    private static bool[] _selectedTriangles;
 
     private static Material s_redoMaterial = null;
     private static Material s_getRedoMaterial() {
@@ -35,45 +38,56 @@ public class SpawnAreaEditor : Editor
 
 
     private VisualElement _root;
-    private Button _redoBtn;
+    private Button _editBtn;
+
     public override VisualElement CreateInspectorGUI() {
+        Debug.LogError("CreateInspectorGUI");
         VisualElement customInspector = new VisualElement();
         _root = customInspector;
 
-        _redoBtn = new Button(clickListener);
-        _redoBtn.text = REDO_BTN_NAME_OFF;
-        customInspector.Add(_redoBtn);
+        _editBtn = new Button(clickListener);
+        _editBtn.text = EDIT_BTN_NAME_OFF;
+        customInspector.Add(_editBtn);
+        /*   Foldout fo = new Foldout();
+           customInspector.Add(fo);
+           Label notice = new Label("SHIFT: add triangle\nCTRL: remove triangle");
+           fo.Add(notice);*/
+        //  TextField tf = new TextField()
 
-        Foldout fo = new Foldout();
-        customInspector.Add(fo);
-        Label notice = new Label("SHIFT: add triangle\nCTRL: remove triangle");
-        fo.Add(notice);
-      //  TextField tf = new TextField()
-
+        updateEditBtn();
         return customInspector;
+    }
+    
+    private void updateEditBtn() { 
+    if (_isRedoOn) {
+            _editBtn.text = EDIT_BTN_NAME_ON;
+        } else {
+            _editBtn.text = EDIT_BTN_NAME_OFF;
+        }
     }
 
     private void clickListener() {
         _isRedoOn = !_isRedoOn;
-
+        Debug.LogError(_isRedoOn);
+        updateEditBtn();
         if (_isRedoOn) {
-            _redoBtn.text = REDO_BTN_NAME_ON;
             setRedoState();
         } else {
-            _redoBtn.text = REDO_BTN_NAME_OFF;
             setNativeState();
         }
     }
 
+    
+
     private void setRedoState() {
+        _lastProcessedMesh = _mesh;
         _nativeMaterial = _renderer.sharedMaterial;
         _nativeUV = _mesh.uv;
         _selectedTriangles = new bool[_mesh.triangles.Length/3];
         _uv = new Vector2[_mesh.vertices.Length];
         int l = _uv.Length;
-        //UnityEngine.Random.InitState(l);
         for (int i=0; i<l; i++) {
-            _uv[i] = new Vector2(0.99f, 0.99f/*UnityEngine.Random.value, UnityEngine.Random.value*/);
+            _uv[i] = new Vector2(0.99f, 0.99f);
         }
         if (_icecream.spawnTriangles != null) {
             foreach (int n in _icecream.spawnTriangles) {
@@ -82,10 +96,11 @@ public class SpawnAreaEditor : Editor
         }
         _renderer.material = s_getRedoMaterial();
         _mesh.uv = _uv;
+        Debug.LogError("+++++++++++++++++++++");
     }
 
     private void setNativeState() {
-        List<int> selTris = new List<int>();
+       /* List<int> selTris = new List<int>();
         for (int i=0; i<_selectedTriangles.Length; i++) {
             if (_selectedTriangles[i]) {
                 selTris.Add(i);
@@ -94,6 +109,13 @@ public class SpawnAreaEditor : Editor
         _icecream.spawnTriangles = selTris.Count > 0 ? selTris.ToArray() : null;
         _renderer.material = _nativeMaterial;
         _mesh.uv = _nativeUV;
+
+        _nativeMaterial = null;
+        _nativeUV = null;
+        _lastProcessedMesh = null;*/
+
+        serializedObject.ApplyModifiedProperties();
+        Debug.LogError("========================");
     }
 
     private Vector2[] _uv;
@@ -105,7 +127,10 @@ public class SpawnAreaEditor : Editor
     private MeshFilter _meshFilter;
     private Renderer _renderer;
     private MeshCollider _meshCollider;
+
     private void OnEnable() {
+        Debug.LogError("OnEnable");
+
         SpawnAreaCreator spawnArea = target as SpawnAreaCreator;
         _icecream = spawnArea.GetComponent<Icecream>();
         _transform = spawnArea.GetComponent<Transform>();
@@ -114,7 +139,14 @@ public class SpawnAreaEditor : Editor
         _meshCollider = spawnArea.GetComponent<MeshCollider>();
         _renderer = spawnArea.GetComponent<Renderer>();
         _geomProcessor = new GeomProcessor(_mesh, _icecream.trilinks, _icecream.trisAroundVertex, _icecream.gameObject.transform);
+    }
 
+    private void OnDisable() {
+        Debug.LogError("OnDisable");
+    }
+
+    private void Awake() {
+        Debug.LogError("Awake "+_isRedoOn);
     }
 
     private void OnSceneGUI() {
@@ -156,7 +188,8 @@ public class SpawnAreaEditor : Editor
 
     private void fillAsSelected(int triangleIndex) {
         if (!_selectedTriangles[triangleIndex]) {
-          //  Debug.LogError(triangleIndex);
+            //  Debug.LogError(triangleIndex);
+            _uv = _mesh.uv;
             _uv[_mesh.triangles[3 * triangleIndex]] = _uv[_mesh.triangles[3 * triangleIndex + 1]] = _uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.749f, 0.749f);
             _mesh.uv = _uv;
             _selectedTriangles[triangleIndex] = true;
