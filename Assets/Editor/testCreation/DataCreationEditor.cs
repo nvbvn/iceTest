@@ -5,22 +5,20 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-[CustomEditor(typeof(soTestMain))]
-public class soTestEditor : Editor
+[CustomEditor(typeof(DataCreation))]
+public class DataCreationEditor : Editor
 {
     public override VisualElement CreateInspectorGUI() {
 //        Debug.LogError("CreateInspectorGUI");
         VisualElement customInspector = new VisualElement();
 
-        Button btn = new Button(btnClickListener);
-        btn.text = "Test";
+        Button btn = new Button(createPreDataClickListener);
+        btn.text = "Create PreData";
         customInspector.Add(btn);
         return customInspector;
     }
 
-    private void btnClickListener() {
-        ScriptableObject so = ScriptableObject.CreateInstance<TestSO>();
-        AssetDatabase.CreateAsset(so, "Assets/TestFolder/TestSO.asset");
-        AssetDatabase.SaveAssets();
+    private void createPreDataClickListener() { 
+    
     }
 }
