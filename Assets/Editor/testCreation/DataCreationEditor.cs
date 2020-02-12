@@ -5,62 +5,69 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-
+using System;
 
 [CustomEditor(typeof(DataCreation))]
 public class DataCreationEditor : Editor
 {
+    private static string CREATE_PREDATA = "Create PreData";
+    private static string MESH_UNAVAILABLE = "Mesh Unavailable!";
 
-
+    private ObjectField _targetSurfaceBind;
+    private Button _createPreDataBtn;
 
     public override VisualElement CreateInspectorGUI() {
         VisualElement customInspector = new VisualElement();
 
-        TextField m_ObjectNameBinding = new TextField("LocalPosition");
-        m_ObjectNameBinding.bindingPath = "m_LocalPosition";
-        customInspector.Add(m_ObjectNameBinding);
+        _targetSurfaceBind = new ObjectField("Target Surface");
+        _targetSurfaceBind.RegisterValueChangedCallback(targetSurfaceChanged);
+        _targetSurfaceBind.objectType =  typeof(GameObject);
+        _targetSurfaceBind.bindingPath = "targetSurface";
+        customInspector.Add(_targetSurfaceBind);
 
-        ObjectField targetMeshBind = new ObjectField("Target Mesh");
-        targetMeshBind.objectType =  typeof(Mesh);
-        targetMeshBind.bindingPath = "targetSurface";
-        customInspector.Add(targetMeshBind);
-
-        /*PropertyField targetMeshBind = new PropertyField(so.FindProperty("targetSurface"), "Target Mesh");
-        //m_ObjectNameBinding.bindingPath = "targetSurface";
-        customInspector.Add(targetMeshBind);*/
-
-        /*m_ObjectNameBinding = new TextField("Target Mesh");
-        m_ObjectNameBinding.bindingPath = "m_Name";
-        customInspector.Add(m_ObjectNameBinding);
-        */
         SerializedObject so = new SerializedObject(target as DataCreation);
-        ///SerializedObject so = new SerializedObject((target as DataCreation).gameObject);
         customInspector.Bind(so);
-        //        OnSelectionChange();
 
-      //  Debug.LogError((target as DataCreation).gameObject.name = "QWE");
+        _createPreDataBtn = new Button(createPreDataClickListener);
+        _createPreDataBtn.text = CREATE_PREDATA;
+        customInspector.Add(_createPreDataBtn);
 
-        Button btn = new Button(createPreDataClickListener);
-        btn.text = "Create PreData";
-        customInspector.Add(btn);
+        checkMeshAvailabilityInTargetSurface(_targetSurfaceBind.value as GameObject);
+
         return customInspector;
     }
 
-    /*public override void OnInspectorGUI() {
-        //serializedObject.Update();
-        DrawDefaultInspector();
-        //EditorGUILayout.PropertyField(lookAtPoint);
-        //EditorGUILayout.PropertyField(serializedObject.FindProperty("qq"));
-        //EditorGUILayout.HelpBox("This is a help box", MessageType.Error);
-        //serializedObject.ApplyModifiedProperties();
-        //EditorGUILayout.DropdownButton(GUIContent. "This is a help box", MessageType.Error);
-        GUI.Button(new Rect(10, 10, 50, 10), "QQ");
-    }*/
+    private void targetSurfaceChanged(ChangeEvent<UnityEngine.Object> e) {
+        checkMeshAvailabilityInTargetSurface(e.newValue as GameObject);
+    }
+
+    private void checkMeshAvailabilityInTargetSurface(GameObject targetSurface) {
+        bool res = false;
+        if (targetSurface != null) {
+            MeshFilter mf = targetSurface.GetComponent<MeshFilter>();
+            if (mf != null && mf.sharedMesh != null) {
+                res = true;
+            }
+        }
+        _createPreDataBtn.SetEnabled(res);
+        _createPreDataBtn.text = res ? CREATE_PREDATA : MESH_UNAVAILABLE;
+
+        //return res;
+    }
+
+    private void targetSurfaceChanged() { 
+    
+    
+    }
 
     private void createPreDataClickListener() {
         PreDataSO so = ScriptableObject.CreateInstance<PreDataSO>();
-        so.trisAroundVertex = GeomPreprocessor.CreateTrisAroundVertex((target as DataCreation).targetSurface);
+        so.trisAroundVertex = GeomPreprocessor.CreateTrisAroundVertex((target as DataCreation).targetSurface.GetComponent<Mesh>());
         AssetDatabase.CreateAsset(so, "Assets/PreData/TestSO.asset");
         AssetDatabase.SaveAssets();
+    }
+
+    public void OnDisable() {
+        _targetSurfaceBind.UnregisterValueChangedCallback(targetSurfaceChanged);
     }
 }

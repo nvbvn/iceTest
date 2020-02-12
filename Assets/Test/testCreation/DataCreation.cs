@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class DataCreation : MonoBehaviour
 {
-    [SerializeField]
-    public Mesh targetSurface;
+    public GameObject targetSurface;
 
     public string qqq = "QQQQ";
 
