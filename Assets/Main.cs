@@ -11,6 +11,8 @@ public class Main : MonoBehaviour {
     private MeshFilter icSpiralMid;
     [SerializeField]
     private MeshFilter icSpincone;
+    [SerializeField]
+    private MeshFilter tanyaTest;
 
     [SerializeField]
     private MeshCollider plane;
@@ -24,6 +26,7 @@ public class Main : MonoBehaviour {
     private GeomProcessor _testGeomProcessor_spincone;
     private GeomProcessor _testGeomProcessor_spiralLow;
     private GeomProcessor _testGeomProcessor_spiralMid;
+    private GeomProcessor _testGeomProcessor_tanyaTEst;
     [SerializeField]
     private Transform cube;
     [SerializeField]
@@ -42,20 +45,23 @@ public class Main : MonoBehaviour {
      //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralLow.mesh));
      //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralMid.mesh));
      //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(testIce.mesh));
+        //trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(tanyaTest.mesh));
        // Debug.Log(DateTime.Now.ToString());
         
         int[] _trilinks;
         String str;
-     //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpincone.mesh);
-     //   str = String.Join(",", _trilinks);
-     //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralLow.mesh);
-     //   str = String.Join(",", _trilinks);
-     //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralMid.mesh);
-     //   str = String.Join(",", _trilinks);
-     //   _trilinks = GeomPreprocessor.CreateTrilinks(testIce.mesh);
-       // str = String.Join(",", _trilinks);
+        //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpincone.mesh);
+        //   str = String.Join(",", _trilinks);
+        //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralLow.mesh);
+        //   str = String.Join(",", _trilinks);
+        //   _trilinks = GeomPreprocessor.CreateTrilinks(icSpiralMid.mesh);
+        //   str = String.Join(",", _trilinks);
+        //   _trilinks = GeomPreprocessor.CreateTrilinks(testIce.mesh);
+        // str = String.Join(",", _trilinks);
+        //_trilinks = GeomPreprocessor.CreateTrilinks(tanyaTest.mesh);
+        //str = String.Join(",", _trilinks);
 
-       // Debug.Log(DateTime.Now.ToString());
+        // Debug.Log(DateTime.Now.ToString());
 
 
         TextAsset txt = Resources.Load("Trilinks/spincone") as TextAsset;
@@ -64,16 +70,20 @@ public class Main : MonoBehaviour {
         int[] trilinks_spiralLow = Array.ConvertAll(txt.text.Split(','), int.Parse);
         txt = Resources.Load("Trilinks/spiralMid") as TextAsset;
         int[] trilinks_spiralMid = Array.ConvertAll(txt.text.Split(','), int.Parse);
+        txt = Resources.Load("Trilinks/icecream_01") as TextAsset;
+        int[] trilinks_tanyaTest = Array.ConvertAll(txt.text.Split(','), int.Parse);
 
         int[][] tav_spincone = createTav("TrisAroundVertex/spincone");
         int[][] tav_spiralLow = createTav("TrisAroundVertex/spiralLow");
         int[][] tav_spiralMid = createTav("TrisAroundVertex/spiralMid");
+        int[][] tav_tanyaTest = createTav("TrisAroundVertex/icecream_01");
 
         //TimeSpan ts1 = TimeSpan.FromTicks(DateTime.Now.Ticks);
         //Debug.Log(DateTime.Now.ToString());
         _testGeomProcessor_spincone = new GeomProcessor(icSpincone.sharedMesh, trilinks_spincone, tav_spincone, icSpincone.transform);
         _testGeomProcessor_spiralLow = new GeomProcessor(icSpiralLow.sharedMesh, trilinks_spiralLow, tav_spiralLow, icSpiralLow.transform);
         _testGeomProcessor_spiralMid = new GeomProcessor(icSpiralMid.sharedMesh, trilinks_spiralMid, tav_spiralMid, icSpiralMid.transform);
+        _testGeomProcessor_tanyaTEst = new GeomProcessor(tanyaTest.sharedMesh, trilinks_tanyaTest, tav_tanyaTest, tanyaTest.transform);
         TimeSpan ts2 = TimeSpan.FromTicks(DateTime.Now.Ticks);
         //Debug.Log((ts2 - ts1).Milliseconds);
         //Debug.Log(DateTime.Now.ToString());
@@ -158,6 +168,9 @@ public class Main : MonoBehaviour {
         } else if (meshCollider == icSpiralMid.GetComponent<MeshCollider>()) {
             targetObject = icSpiralMid.transform;
             targetProcessor = _testGeomProcessor_spiralMid;
+        } else if (meshCollider == tanyaTest.GetComponent<MeshCollider>()) {
+            targetObject = tanyaTest.transform;
+            targetProcessor = _testGeomProcessor_tanyaTEst;
         }
 
         if (targetObject == null) {

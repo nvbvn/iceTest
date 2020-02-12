@@ -120,3 +120,25 @@ The following packages were updated:
   com.unity.purchasing from version 2.0.3 to 2.0.6
 The following packages were removed:
   com.unity.package-manager-ui@2.0.3
+
+=== Wed Dec  4 22:38:31 2019
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.vscode from version 1.0.7 to 1.1.3
+  com.unity.test-framework from version 1.1.1 to 1.1.3
+  com.unity.timeline from version 1.2.2 to 1.2.6
+  com.unity.xr.legacyinputhelpers from version 1.3.7 to 1.3.8
+
+=== Wed Jan 15 21:39:01 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.analytics from version 3.3.2 to 3.3.4
+  com.unity.ide.rider from version 1.1.0 to 1.1.4
+  com.unity.test-framework from version 1.1.3 to 1.1.9
+  com.unity.timeline from version 1.2.6 to 1.2.9
