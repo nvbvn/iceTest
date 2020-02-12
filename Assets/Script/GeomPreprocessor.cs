@@ -45,7 +45,7 @@ public class GeomPreprocessor {
         return res;
     }
 
-    public static string[] CreateTrisAroundVertex(Mesh srcMesh) {
+    /*public static string[] CreateTrisAroundVertex(Mesh srcMesh) {
         Vector3[] verts = srcMesh.vertices;
         int[] tris = srcMesh.triangles;
         int l = verts.Length;
@@ -62,6 +62,28 @@ public class GeomPreprocessor {
                 }
             }
             res[i] = string.Join(";", temp.ToArray());
+            temp.Clear();
+        }
+        return res;
+    }*/
+
+    public static int[][] CreateTrisAroundVertex(Mesh srcMesh) {
+        Vector3[] verts = srcMesh.vertices;
+        int[] tris = srcMesh.triangles;
+        int l = verts.Length;
+        int tl = tris.Length;
+        int[][] res = new int[l][];
+        Vector3 v;
+        int triN, j;
+        List<int> temp = new List<int>();
+        for (int i=0; i<l; i++) {
+            v = verts[i];
+            for (j=0; (triN = 3*j)<tl; j++) {
+                if (verts[tris[triN]] == v || verts[tris[triN+1]] == v || verts[tris[triN+2]] == v) {
+                    temp.Add(j);
+                }
+            }
+            res[i] = temp.ToArray();
             temp.Clear();
         }
         return res;

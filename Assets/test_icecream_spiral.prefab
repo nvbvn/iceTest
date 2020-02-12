@@ -139,7 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trilinks: {fileID: 4900000, guid: 0a9cae3e41a8b734a9fbde3139a69d6b, type: 3}
   trisAroundVertex: {fileID: 4900000, guid: 5dcba9799ce64be47965559153b97635, type: 3}
-  spawnTriangles: 060000000b00000010000000d1010000da010000fc0100008002000087020000c1020000
+  spawnTriangles: 060000000b00000010000000b8000000b9000000cc000000f0000000f1000000f6000000f7000000f8000000f9000000fc0000001c0100001d010000d1010000da010000fc0100008002000087020000c1020000
 --- !u!1 &6311140863903368046
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,7 +163,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6311140863903368046}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.1939759, y: -0.8224326, z: 0.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

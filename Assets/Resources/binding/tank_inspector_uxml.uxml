@@ -1,0 +1,9 @@
+﻿<UXML xmlns:ui="UnityEngine.UIElements" xmlns:ue="UnityEditor.UIElements">
+  <ui:VisualElement name="row" class="container">
+    <ui:Label text="Tank Script - Custom Inspector" />
+    <ue:PropertyField binding-path="tankName" name="tank-name-field" />
+    <ue:PropertyField binding-path="tankSize" name="tank-size-field" />
+    <ue:PropertyField binding-path="mes" name="tank-mesh-field" />
+    <ue:PropertyField binding-path="m_Name" name="name-field" />
+  </ui:VisualElement>
+</UXML>

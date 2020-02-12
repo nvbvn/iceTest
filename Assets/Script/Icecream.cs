@@ -13,6 +13,9 @@ public class Icecream : MonoBehaviour
     [SerializeField]
     public int[] spawnTriangles;
 
+    [SerializeField]
+    public List<int> testProp = new List<int>();
+
     private Mesh _mesh;
     private GeomProcessor _geomProcessor;
 

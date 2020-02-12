@@ -5,5 +5,14 @@ using UnityEngine;
 public class DataCreation : MonoBehaviour
 {
     [SerializeField]
-    private Mesh targetSurface;
+    public Mesh targetSurface;
+
+    public string qqq = "QQQQ";
+
+    /*private void Update()
+    {
+        if () { 
+        
+        }
+    }*/
 }

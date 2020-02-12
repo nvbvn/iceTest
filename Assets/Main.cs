@@ -41,7 +41,7 @@ public class Main : MonoBehaviour {
         Application.targetFrameRate = 60;
 
         string trisAroundVertex;
-     //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpincone.mesh));
+        //trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpincone.mesh));
      //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralLow.mesh));
      //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(icSpiralMid.mesh));
      //   trisAroundVertex = string.Join(",", GeomPreprocessor.CreateTrisAroundVertex(testIce.mesh));
