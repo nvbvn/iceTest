@@ -19,7 +19,8 @@ public class soTestEditor : Editor
     }
 
     private void btnClickListener() {
-        ScriptableObject so = ScriptableObject.CreateInstance<TestSO>();
+        TestSO so = ScriptableObject.CreateInstance<TestSO>();
+        so.n = 666;
         AssetDatabase.CreateAsset(so, "Assets/TestFolder/TestSO.asset");
         AssetDatabase.SaveAssets();
     }

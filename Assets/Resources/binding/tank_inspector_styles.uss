@@ -11,3 +11,6 @@ TextField:hover {
 FloatField {
    background-color: rgb(0, 0, 255);
 }
+.leftToggle{
+    checked: rgb(80, 80, 80);
+}
