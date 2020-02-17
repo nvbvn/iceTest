@@ -507,12 +507,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72361c8e1ae3a6f43b477509e566888f, type: 3}
---- !u!1 &724587614 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100000, guid: 72361c8e1ae3a6f43b477509e566888f,
-    type: 3}
-  m_PrefabInstance: {fileID: 724587613}
-  m_PrefabAsset: {fileID: 0}
 --- !u!43 &1009063168
 Mesh:
   m_ObjectHideFlags: 0
@@ -828,7 +822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184b89176d630a544a814e6676e7bcf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSurface: {fileID: 724587614}
+  targetSurface: {fileID: 1776665377}
   qqq: QQQQ
 --- !u!1 &1277214598
 GameObject:
@@ -987,6 +981,12 @@ PrefabInstance:
       objectReference: {fileID: 1009063168}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f55edfac6908f524c9e4104252d476f9, type: 3}
+--- !u!1 &1776665377 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2033969495243183921, guid: f55edfac6908f524c9e4104252d476f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1776665376}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2086525461
 GameObject:
   m_ObjectHideFlags: 0

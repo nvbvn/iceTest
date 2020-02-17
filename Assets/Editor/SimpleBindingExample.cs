@@ -20,7 +20,17 @@ namespace UIElementsExamples
        public void OnEnable()
        {
            var root = this.rootVisualElement;
-           
+
+            Toolbar t = new Toolbar();
+            root.Add(t);
+
+            ToolbarToggle tg = new ToolbarToggle() { text = "tg1" };
+            t.Add(tg);
+            tg = new ToolbarToggle() { text = "tg2" };
+            t.Add(tg);
+            tg.RegisterValueChangedCallback(toggleChanged);
+            tg.RegisterCallback<ChangeEvent<bool>>(toggleListener);
+
             m_ObjectNameBinding = new TextField("Width");
             m_ObjectNameBinding.bindingPath = "m_SizeDelta.x";
             root.Add(m_ObjectNameBinding);
@@ -29,8 +39,18 @@ namespace UIElementsExamples
            root.Add(m_ObjectNameBinding);
             OnSelectionChange();
        }
-    
-       public void OnSelectionChange()
+
+        private void toggleListener(ChangeEvent<bool> e)
+        {
+            Debug.LogError("?");
+        }
+
+        private void toggleChanged(ChangeEvent<bool> e)
+        {
+            Debug.LogError("???");
+        }
+
+        public void OnSelectionChange()
        {
             object o = Selection.activeObject;
             //UnityEngine.UI.Button selectedObject = Selection.activeObject as UnityEngine.UI.Button;

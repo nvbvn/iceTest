@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "PreDataSO", menuName = "ice/SO/PreDataSO")]
 public class PreDataSO : ScriptableObject {
     public string[] trisAroundVertex;
     public int[] trilinks;
