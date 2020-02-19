@@ -100,7 +100,7 @@ public class SpawnAreaEditor : Editor
     }
 
     private void setNativeState() {
-       /* List<int> selTris = new List<int>();
+        List<int> selTris = new List<int>();
         for (int i=0; i<_selectedTriangles.Length; i++) {
             if (_selectedTriangles[i]) {
                 selTris.Add(i);
@@ -112,7 +112,7 @@ public class SpawnAreaEditor : Editor
 
         _nativeMaterial = null;
         _nativeUV = null;
-        _lastProcessedMesh = null;*/
+        _lastProcessedMesh = null;
 
         serializedObject.ApplyModifiedProperties();
         Debug.LogError("========================");

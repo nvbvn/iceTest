@@ -37,6 +37,14 @@ public class DataCreationEditor : Editor
     private TextField _spawnSetNameTf;
 
 
+    private static Material s_redoMaterial = null;
+    private static Material s_getRedoMaterial() {
+        if (s_redoMaterial == null) {
+            s_redoMaterial = Resources.Load<Material>("Materials/ForSpawnAreaCreator");
+        }
+        return s_redoMaterial;
+    }
+
     public override VisualElement CreateInspectorGUI() {
         VisualElement customInspector = new VisualElement();
 
@@ -116,6 +124,7 @@ public class DataCreationEditor : Editor
     }
 
     private void setSpawnSO(SpawnSO spawnSO) {
+        //Debug.LogError("setSpawnSO: "+spawnSO);
         _spawnSO = spawnSO;
         _spawnSetNameTf.value = _spawnSO==null? string.Empty : _spawnSO.name;
         refreshZoneList(_spawnSO==null? 0 : _spawnSO.spawnTris.Length);
@@ -146,7 +155,7 @@ public class DataCreationEditor : Editor
     private void targetSurfaceChanged(ChangeEvent<UnityEngine.Object> e) {
         //setSpawnSO(null);
         checkMeshAvailabilityInTargetSurface(e.newValue as GameObject);
-        _spawnSOfield.value = null;
+        
     }
 
     
@@ -162,6 +171,9 @@ public class DataCreationEditor : Editor
         _createPreDataBtn.SetEnabled(res);
         _spawnEditBox.SetEnabled(res);
         _createPreDataBtn.text = res ? CREATE_PREDATA : MESH_UNAVAILABLE;
+
+        _spawnSOfield.value = null;
+        setSpawnSO(null);
     }
 
 
@@ -188,6 +200,35 @@ public class DataCreationEditor : Editor
             parentPath += "/"+folderPathByStep[i];
         }
     }
+
+
+    /*private void OnSceneGUI() {
+        if ((target as DataCreation).targetSurface != null && ) {
+            RaycastHit hit;
+            Vector2 rayPoint = new Vector2(Event.current.mousePosition.x, SceneView.currentDrawingSceneView.camera.pixelHeight - Event.current.mousePosition.y);
+            if (!Physics.Raycast(SceneView.currentDrawingSceneView.camera.ScreenPointToRay(rayPoint), out hit)) {
+                return;
+            }
+            MeshCollider meshCollider = hit.collider as MeshCollider;
+            if (meshCollider == null || meshCollider.sharedMesh == null)
+                return;
+
+            if (meshCollider == _meshCollider) {
+                fillingTriangle(hit.triangleIndex);
+                //_mesh.triangles[hit.triangleIndex]
+                Handles.color = Color.red;
+                Handles.DrawWireCube(hit.point, new Vector3(0.01f, 0.01f, 0.01f));
+                List<Vector3> points = _geomProcessor.GetEdgeIntersectPoints(_transform.InverseTransformPoint(hit.point), hit.triangleIndex);
+                // points[0].
+                int l = points.Count;
+                Vector3[] vp = new Vector3[l];
+                for (int i = 0; i < l; i++) {
+                    vp[i] = _transform.TransformPoint(points[i]);
+                }
+                Handles.DrawAAPolyLine(vp);
+            }
+        }
+    }*/
 
     public void OnDisable() {
         _targetSurfaceBind.UnregisterValueChangedCallback(targetSurfaceChanged);
