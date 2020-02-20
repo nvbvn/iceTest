@@ -163,7 +163,7 @@ public class SpawnAreaEditor : Editor
             fillingTriangle(hit.triangleIndex);
             //_mesh.triangles[hit.triangleIndex]
             Handles.color = Color.red;
-            Handles.DrawWireCube(hit.point, new Vector3(0.01f, 0.01f, 0.01f));
+            Handles.DrawWireCube(hit.point, new Vector3(0.05f, 0.05f, 0.05f));
             List<Vector3> points = _geomProcessor.GetEdgeIntersectPoints(_transform.InverseTransformPoint(hit.point), hit.triangleIndex);
             // points[0].
             int l = points.Count;
@@ -198,7 +198,8 @@ public class SpawnAreaEditor : Editor
 
     private void fillAsNonselected(int triangleIndex) {
         if (_selectedTriangles[triangleIndex]) {
-        //    Debug.LogError("-"+triangleIndex);
+            //    Debug.LogError("-"+triangleIndex);
+            _uv = _mesh.uv;
             _uv[_mesh.triangles[3 * triangleIndex]] = _uv[_mesh.triangles[3 * triangleIndex + 1]] = _uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.99f, 0.99f);
             _mesh.uv = _uv;
             _selectedTriangles[triangleIndex] = false;
