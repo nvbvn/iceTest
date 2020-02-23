@@ -40,7 +40,7 @@ public class DataCreationEditor : Editor
     private static Material s_redoMaterial = null;
     private static Material s_getRedoMaterial() {
         if (s_redoMaterial == null) {
-            s_redoMaterial = Resources.Load<Material>("Materials/ForSpawnAreaCreator");
+            s_redoMaterial = Resources.Load<Material>("Materials/VertexColorMaterial");
         }
         return s_redoMaterial;
     }

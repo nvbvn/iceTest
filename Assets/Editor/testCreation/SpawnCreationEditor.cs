@@ -201,18 +201,50 @@ public class SpawnCreationEditor : Editor
 
 
         _selectedTriangles = new bool[_mesh.triangles.Length/3];
-        Vector2[] uv = new Vector2[_mesh.vertices.Length];
+       /* Vector2[] uv = new Vector2[_mesh.vertices.Length];
         int l = uv.Length;
         for (int i=0; i<l; i++) {
             uv[i] = new Vector2(0.99f, 0.99f);
-        }
+        }/*
        /* if (_icecream.spawnTriangles != null) {
             foreach (int n in _icecream.spawnTriangles) {
                 fillAsSelected(n);
             }
         }*/
         _targetObject.GetComponent<Renderer>().material = s_getRedoMaterial();
-        _mesh.uv = uv;
+        Color[] col = GetRandomColors(_mesh.vertices.Length);
+        _mesh.colors = col;
+        //  _mesh.uv = uv;
+    }
+
+     private Color[] GetRandomColors(int vertexCount)
+    {
+        var colorPalette = new[]
+        {
+            new Color(1f, 0, 0),
+            new Color(0, 1f, 0),
+            new Color(0, 0, 1f),
+            new Color(1f, 1f, 0),
+            new Color(0, 1f, 1f),
+            new Color(1f, 0, 1f)
+        };
+
+        var colors = new Color[vertexCount];
+        var randomIndex = 0;
+
+        for (int i = 0; i < vertexCount; i++)
+        {
+            // Each triangle has 3 vertices, so, if i % 3 equals 0, then we are in a new triangle
+            // so, get a new random color
+            if (i % 3 == 0)
+            {
+                randomIndex = UnityEngine.Random.Range(0, colorPalette.Length - 1);
+            }
+
+            colors[i] = colorPalette[randomIndex];
+        }
+
+        return colors;
     }
 
     private void OnSceneGUI() {
@@ -255,9 +287,12 @@ public class SpawnCreationEditor : Editor
     private void fillAsSelected(int triangleIndex) {
         if (!_selectedTriangles[triangleIndex]) {
             //  Debug.LogError(triangleIndex);
-            Vector2[] uv = _mesh.uv;
+            /*Vector2[] uv = _mesh.uv;
             uv[_mesh.triangles[3 * triangleIndex]] = uv[_mesh.triangles[3 * triangleIndex + 1]] = uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.749f, 0.749f);
-            _mesh.uv = uv;
+            _mesh.uv = uv;*/
+            Color[] col = _mesh.colors;// new Color[_mesh.vertices.Length];
+            col[_mesh.triangles[3 * triangleIndex]] = new Color(1, 0, 0);
+            _mesh.colors = col;
             _selectedTriangles[triangleIndex] = true;
         }
     }
