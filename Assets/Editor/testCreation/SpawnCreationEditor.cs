@@ -27,6 +27,7 @@ public class SpawnCreationEditor : Editor
 
     private bool _isSpwnEditAvailable = false;
     private Vector3[] _nativeVertices = null;
+    private int[] _nativeTriangles = null;
 
     private static Material s_redoMaterial = null;
     private static Material s_getRedoMaterial() {
@@ -205,7 +206,7 @@ public class SpawnCreationEditor : Editor
         Renderer r = _targetObject.GetComponent<Renderer>();
 
         _selectedTriangles = new bool[_mesh.triangles.Length/3];
-      //  breakUpTriangles(_mesh);
+        breakUpTriangles(_mesh);
         Vector2[] uv = new Vector2[_mesh.vertices.Length];
         int l = uv.Length;
         for (int i=0; i<l; i++) {
@@ -218,15 +219,15 @@ public class SpawnCreationEditor : Editor
     private void breakUpTriangles(Mesh mesh) {
         int l = mesh.triangles.Length;
         Vector3[] newVerts = new Vector3[l];
-        Vector3[] verts = mesh.vertices;
-        int[] tris = mesh.triangles;
+        _nativeVertices = mesh.vertices;
+        _nativeTriangles = mesh.triangles;
+        int[] newTris = mesh.triangles;
         for (int i=0; i<l; i++) {
-            newVerts[i] = verts[tris[i]];
-            tris[i] = i;
+            newVerts[i] = _nativeVertices[newTris[i]];
+            newTris[i] = i;
         }
-        _nativeVertices = verts;
         mesh.vertices = newVerts;
-        mesh.triangles = tris;
+        mesh.triangles = newTris;
     }
 
 
@@ -290,7 +291,8 @@ public class SpawnCreationEditor : Editor
 
     private void OnDisable() {
         if (_isSpwnEditAvailable) {
-            //_targetObject.GetComponent<MeshFilter>().sharedMesh.vertices = _nativeVertices;
+            _targetObject.GetComponent<MeshFilter>().sharedMesh.triangles = _nativeTriangles;
+            _targetObject.GetComponent<MeshFilter>().sharedMesh.vertices = _nativeVertices;
         }
     }
 
