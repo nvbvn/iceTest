@@ -25,6 +25,9 @@ public class SpawnCreationEditor : Editor
     private PreDataSO _preData;
     private SpawnSO _spawnSO;
 
+    private bool _isSpwnEditAvailable = false;
+    private Vector3[] _nativeVertices = null;
+
     private static Material s_redoMaterial = null;
     private static Material s_getRedoMaterial() {
         if (s_redoMaterial == null) {
@@ -145,6 +148,7 @@ public class SpawnCreationEditor : Editor
     }
 
     private void prepareSpawnBox(bool isAVailable) {
+        _isSpwnEditAvailable = isAVailable;
         refreshZoneList(isAVailable ? _spawnSO.spawnTris.Length : 1);
         _spawnSetNameTf.value = isAVailable ? _spawnSO.name : string.Empty;
         _spawnBox.SetEnabled(isAVailable);
@@ -198,54 +202,33 @@ public class SpawnCreationEditor : Editor
         _mesh = _targetObject.GetComponent<MeshFilter>().sharedMesh;
         _geomProcessor = new GeomProcessor(_mesh, _preData.trilinks, _preData.GetTav(), _targetObject.transform);
         _transform = _targetObject.GetComponent<Transform>();
-
+        Renderer r = _targetObject.GetComponent<Renderer>();
 
         _selectedTriangles = new bool[_mesh.triangles.Length/3];
-       /* Vector2[] uv = new Vector2[_mesh.vertices.Length];
+      //  breakUpTriangles(_mesh);
+        Vector2[] uv = new Vector2[_mesh.vertices.Length];
         int l = uv.Length;
         for (int i=0; i<l; i++) {
-            uv[i] = new Vector2(0.99f, 0.99f);
-        }/*
-       /* if (_icecream.spawnTriangles != null) {
-            foreach (int n in _icecream.spawnTriangles) {
-                fillAsSelected(n);
-            }
-        }*/
-        _targetObject.GetComponent<Renderer>().material = s_getRedoMaterial();
-        Color[] col = GetRandomColors(_mesh.vertices.Length);
-        _mesh.colors = col;
-        //  _mesh.uv = uv;
-    }
-
-     private Color[] GetRandomColors(int vertexCount)
-    {
-        var colorPalette = new[]
-        {
-            new Color(1f, 0, 0),
-            new Color(0, 1f, 0),
-            new Color(0, 0, 1f),
-            new Color(1f, 1f, 0),
-            new Color(0, 1f, 1f),
-            new Color(1f, 0, 1f)
-        };
-
-        var colors = new Color[vertexCount];
-        var randomIndex = 0;
-
-        for (int i = 0; i < vertexCount; i++)
-        {
-            // Each triangle has 3 vertices, so, if i % 3 equals 0, then we are in a new triangle
-            // so, get a new random color
-            if (i % 3 == 0)
-            {
-                randomIndex = UnityEngine.Random.Range(0, colorPalette.Length - 1);
-            }
-
-            colors[i] = colorPalette[randomIndex];
+            uv[i] = new Vector2(0.9f, 0.9f);
         }
-
-        return colors;
+        _targetObject.GetComponent<Renderer>().material = s_getRedoMaterial();
+          _mesh.uv = uv;
     }
+
+    private void breakUpTriangles(Mesh mesh) {
+        int l = mesh.triangles.Length;
+        Vector3[] newVerts = new Vector3[l];
+        Vector3[] verts = mesh.vertices;
+        int[] tris = mesh.triangles;
+        for (int i=0; i<l; i++) {
+            newVerts[i] = verts[tris[i]];
+            tris[i] = i;
+        }
+        _nativeVertices = verts;
+        mesh.vertices = newVerts;
+        mesh.triangles = tris;
+    }
+
 
     private void OnSceneGUI() {
         RaycastHit hit;
@@ -287,12 +270,9 @@ public class SpawnCreationEditor : Editor
     private void fillAsSelected(int triangleIndex) {
         if (!_selectedTriangles[triangleIndex]) {
             //  Debug.LogError(triangleIndex);
-            /*Vector2[] uv = _mesh.uv;
+            Vector2[] uv = _mesh.uv;
             uv[_mesh.triangles[3 * triangleIndex]] = uv[_mesh.triangles[3 * triangleIndex + 1]] = uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.749f, 0.749f);
-            _mesh.uv = uv;*/
-            Color[] col = _mesh.colors;// new Color[_mesh.vertices.Length];
-            col[_mesh.triangles[3 * triangleIndex]] = new Color(1, 0, 0);
-            _mesh.colors = col;
+            _mesh.uv = uv;
             _selectedTriangles[triangleIndex] = true;
         }
     }
@@ -304,6 +284,13 @@ public class SpawnCreationEditor : Editor
             uv[_mesh.triangles[3 * triangleIndex]] = uv[_mesh.triangles[3 * triangleIndex + 1]] = uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.99f, 0.99f);
             _mesh.uv = uv;
             _selectedTriangles[triangleIndex] = false;
+        }
+    }
+
+
+    private void OnDisable() {
+        if (_isSpwnEditAvailable) {
+            //_targetObject.GetComponent<MeshFilter>().sharedMesh.vertices = _nativeVertices;
         }
     }
 
