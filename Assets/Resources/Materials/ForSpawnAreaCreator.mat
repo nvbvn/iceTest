@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ForSpawnAreaCreator
-  m_Shader: {fileID: 4800000, guid: 80496b376ff28f845a3b7a37e979539c, type: 3}
+  m_Shader: {fileID: 4800000, guid: c32efc1c3cb319d47866042fc4a0486e, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -67,6 +67,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _Luminosity: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -77,5 +78,5 @@ Material:
     - _UVSec: 1
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 0.8855015, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

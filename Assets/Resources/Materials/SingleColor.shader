@@ -13,7 +13,7 @@ Shader "Custom/SingleColor"
         {
             CGPROGRAM
             float _Colors[2048];
-            float _Colors2[2048];
+            float _Colors2[2047];
             #pragma vertex vert
             #pragma fragment frag
             
