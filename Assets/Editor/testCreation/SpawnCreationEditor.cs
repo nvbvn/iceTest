@@ -206,7 +206,7 @@ public class SpawnCreationEditor : Editor
         Renderer r = _targetObject.GetComponent<Renderer>();
 
         _selectedTriangles = new bool[_mesh.triangles.Length/3];
-        breakUpTriangles(_mesh);
+        //breakUpTriangles(_mesh);
         Vector2[] uv = new Vector2[_mesh.vertices.Length];
         int l = uv.Length;
         for (int i=0; i<l; i++) {
