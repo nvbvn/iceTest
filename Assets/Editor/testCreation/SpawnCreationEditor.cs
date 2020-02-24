@@ -26,8 +26,7 @@ public class SpawnCreationEditor : Editor
     private SpawnSO _spawnSO;
 
     private bool _isSpwnEditAvailable = false;
-    private Vector3[] _nativeVertices = null;
-    private int[] _nativeTriangles = null;
+    private Material _nativeMaterial = null;
 
     private static Material s_redoMaterial = null;
     private static Material s_getRedoMaterial() {
@@ -135,7 +134,12 @@ public class SpawnCreationEditor : Editor
         //_spawnSO = _spawnSObind.value as SpawnSO;
 
         bool res = true;
-        MeshFilter mf = _targetObject?.GetComponent<MeshFilter>();
+        MeshFilter mf = null;
+        if (_targetObject == null) {
+            res = false;
+        } else {
+            mf = _targetObject?.GetComponent<MeshFilter>();
+        }
         if (mf == null || mf.sharedMesh == null) {
             res = false;
         }
@@ -195,6 +199,8 @@ public class SpawnCreationEditor : Editor
 
     private Mesh _mesh;
     private static bool[] _selectedTriangles;
+    private Color[] _colors;
+    private Material _matForEdit;
     private GeomProcessor _geomProcessor;
     private MeshCollider _meshCollider;
     private void prepareEdit() {
@@ -205,31 +211,16 @@ public class SpawnCreationEditor : Editor
         _transform = _targetObject.GetComponent<Transform>();
         Renderer r = _targetObject.GetComponent<Renderer>();
 
-        _selectedTriangles = new bool[_mesh.triangles.Length/3];
-        //breakUpTriangles(_mesh);
-        Vector2[] uv = new Vector2[_mesh.vertices.Length];
-        int l = uv.Length;
+        int l = _mesh.triangles.Length / 3;
+        _selectedTriangles = new bool[l];
+        _colors = new Color[l];
         for (int i=0; i<l; i++) {
-            uv[i] = new Vector2(0.9f, 0.9f);
+            _colors[i] = new Color(0.75f, 0.75f, 0.75f);
         }
-        _targetObject.GetComponent<Renderer>().material = s_getRedoMaterial();
-          _mesh.uv = uv;
+        _nativeMaterial = r.sharedMaterial;
+        r.sharedMaterial = _matForEdit = s_getRedoMaterial();
+        _matForEdit.SetColorArray("_Colors", _colors);
     }
-
-    private void breakUpTriangles(Mesh mesh) {
-        int l = mesh.triangles.Length;
-        Vector3[] newVerts = new Vector3[l];
-        _nativeVertices = mesh.vertices;
-        _nativeTriangles = mesh.triangles;
-        int[] newTris = mesh.triangles;
-        for (int i=0; i<l; i++) {
-            newVerts[i] = _nativeVertices[newTris[i]];
-            newTris[i] = i;
-        }
-        mesh.vertices = newVerts;
-        mesh.triangles = newTris;
-    }
-
 
     private void OnSceneGUI() {
         RaycastHit hit;
@@ -270,20 +261,17 @@ public class SpawnCreationEditor : Editor
 
     private void fillAsSelected(int triangleIndex) {
         if (!_selectedTriangles[triangleIndex]) {
-            //  Debug.LogError(triangleIndex);
-            Vector2[] uv = _mesh.uv;
-            uv[_mesh.triangles[3 * triangleIndex]] = uv[_mesh.triangles[3 * triangleIndex + 1]] = uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.749f, 0.749f);
-            _mesh.uv = uv;
+
+            _colors[triangleIndex] = new Color(1, 0.1f, 0.1f);
+            _matForEdit.SetColorArray("_Colors", _colors);
             _selectedTriangles[triangleIndex] = true;
         }
     }
 
     private void fillAsNonselected(int triangleIndex) {
         if (_selectedTriangles[triangleIndex]) {
-            //    Debug.LogError("-"+triangleIndex);
-            Vector2[] uv = _mesh.uv;
-            uv[_mesh.triangles[3 * triangleIndex]] = uv[_mesh.triangles[3 * triangleIndex + 1]] = uv[_mesh.triangles[3 * triangleIndex + 2]] = new Vector2(0.99f, 0.99f);
-            _mesh.uv = uv;
+            _colors[triangleIndex] = new Color(0.75f, 0.75f, 0.75f);
+            _matForEdit.SetColorArray("_Colors", _colors);
             _selectedTriangles[triangleIndex] = false;
         }
     }
@@ -291,8 +279,7 @@ public class SpawnCreationEditor : Editor
 
     private void OnDisable() {
         if (_isSpwnEditAvailable) {
-            _targetObject.GetComponent<MeshFilter>().sharedMesh.triangles = _nativeTriangles;
-            _targetObject.GetComponent<MeshFilter>().sharedMesh.vertices = _nativeVertices;
+            _targetObject.GetComponent<Renderer>().sharedMaterial = _nativeMaterial;
         }
     }
 
