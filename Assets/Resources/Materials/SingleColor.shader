@@ -12,8 +12,8 @@ Shader "Custom/SingleColor"
         Pass
         {
             CGPROGRAM
-            float _Colors[2048];
-            float _Colors2[2047];
+            fixed4 _Colors[2048];
+            fixed4 _Colors2[2047];
             #pragma vertex vert
             #pragma fragment frag
             
@@ -32,7 +32,10 @@ Shader "Custom/SingleColor"
             // pixel shader, no inputs needed
             fixed4 frag (uint triangleID: SV_PrimitiveID) : SV_Target
             {
-                _Color.r *= triangleID%3;
+                //_Color.r *= triangleID%3;
+                _Color = _Colors[triangleID];
+                //_Color.r = _Colors[triangleID][0];
+                //_Color.g = _Colors[triangleID].g;
                 return _Color; // just return it
             }
             ENDCG
