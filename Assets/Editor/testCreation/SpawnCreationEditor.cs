@@ -27,6 +27,7 @@ public class SpawnCreationEditor : Editor
 
     private bool _isSpwnEditAvailable = false;
     private Material _nativeMaterial = null;
+    private List<List<int>> _spawns;
 
     private static Material s_redoMaterial = null;
     private static Material s_getRedoMaterial() {
@@ -80,6 +81,7 @@ public class SpawnCreationEditor : Editor
         _spawnZoneList = new ListView(items, itemHeight, makeItem, bindItem);
         _spawnZoneList.selectionType = SelectionType.Single;
         _spawnZoneList.onSelectionChanged += onItemChosenHandler;
+        //_spawnZoneList.onSelectionChanged += objects => Debug.Log(objects);
         _spawnBox.Add(_spawnZoneList);
 
         Box arBtnBox = new Box();
@@ -158,13 +160,19 @@ public class SpawnCreationEditor : Editor
         _spawnSetNameTf.value = isAVailable ? _spawnSO.name : string.Empty;
         _spawnBox.SetEnabled(isAVailable);
         if (isAVailable) {
-            _spawnZoneList.selectedIndex = 0;
+            _spawns = new List<List<int>>();
+            for (int i=0; i<_spawnSO.spawnTris.Length; i++) {
+                _spawns.Add(_spawnSO.spawnTris[i].Length>0? new List<int>(Array.ConvertAll(_spawnSO.spawnTris[i].Split(','), int.Parse)) : new List<int>());
+            }
             prepareEdit();
+            _spawnZoneList.selectedIndex = 0;
+            
         }
     }
 
     private void onItemChosenHandler(object obj) {
-        Debug.LogError("onItemChosenHandler");
+        //Debug.LogError("onItemChosenHandler: "+(obj as List<string>)[0]);
+        setSpawnZoneByIndex(_spawnZoneList.selectedIndex);
     }
 
     private void addSpawnZoneClickListener() {
@@ -184,6 +192,17 @@ public class SpawnCreationEditor : Editor
         }
         _spawnZoneList.style.height = i * ITEM_HEIGHT;
         _spawnZoneList.Refresh();
+    }
+
+    private void setSpawnZoneByIndex(int index) { 
+        int l = _mesh.triangles.Length / 3;
+        _selectedTriangles = new bool[l];
+        _colors = new Color[l];
+        for (int i=0; i<l; i++) {
+            _colors[i] = new Color(0.75f, 0.75f, 0.75f);
+        }
+        _matForEdit.SetColorArray("_Colors", _colors);
+
     }
 
 
@@ -209,17 +228,13 @@ public class SpawnCreationEditor : Editor
         _mesh = _targetObject.GetComponent<MeshFilter>().sharedMesh;
         _geomProcessor = new GeomProcessor(_mesh, _preData.trilinks, _preData.GetTav(), _targetObject.transform);
         _transform = _targetObject.GetComponent<Transform>();
-        Renderer r = _targetObject.GetComponent<Renderer>();
+        Renderer renderer = _targetObject.GetComponent<Renderer>();
+        _nativeMaterial = renderer.sharedMaterial;
+        renderer.sharedMaterial = _matForEdit = s_getRedoMaterial();
+    }
 
-        int l = _mesh.triangles.Length / 3;
-        _selectedTriangles = new bool[l];
-        _colors = new Color[l];
-        for (int i=0; i<l; i++) {
-            _colors[i] = new Color(0.75f, 0.75f, 0.75f);
-        }
-        _nativeMaterial = r.sharedMaterial;
-        r.sharedMaterial = _matForEdit = s_getRedoMaterial();
-        _matForEdit.SetColorArray("_Colors", _colors);
+    private void clearSelection() { 
+    
     }
 
     private void OnSceneGUI() {
