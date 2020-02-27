@@ -33,8 +33,12 @@ Shader "Custom/SingleColor"
             fixed4 frag (uint triangleID: SV_PrimitiveID) : SV_Target
             {
                 //_Color.r *= triangleID%3;
-                _Color = _Colors[triangleID];
-                //_Color.r = _Colors[triangleID][0];
+                //_Color = _Colors[triangleID];
+                uint i = triangleID/4;
+                uint j = triangleID%4;
+                _Color.r *= _Colors[i][j];
+                _Color.g /= _Colors[i][j];
+                _Color.b /= _Colors[i][j];
                 //_Color.g = _Colors[triangleID].g;
                 return _Color; // just return it
             }

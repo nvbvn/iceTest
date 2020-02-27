@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SpawnSO", menuName = "ice/SO/SpawnSO")]
 public class SpawnSO : ScriptableObject
 {
-    public string[] spawnTris;
+    public string[] spawnTris = new string[1];
 }
