@@ -100,7 +100,7 @@ public class SpawnCreationEditor : Editor
 
         _spawnSetNameTf = new TextField("Spawn Set Name");
         _spawnBox.Add(_spawnSetNameTf);
-        Button saveBtn = new Button(removeSpawnZoneClickListener);
+        Button saveBtn = new Button(saveClickListener);
         saveBtn.text = "Save Spawns";
         _spawnBox.Add(saveBtn);
 
@@ -173,7 +173,10 @@ public class SpawnCreationEditor : Editor
     }
 
     private void onItemChosenHandler(IEnumerable<object> items) {
-        setSpawnZoneByIndex(_spawnZoneList.selectedIndex);
+       // Debug.LogError("changed: "+ _spawnZoneList.selectedIndex);
+        if (_currentEditSpawnZone != _spawnZoneList.selectedIndex) {
+            setSpawnZoneByIndex(_spawnZoneList.selectedIndex);
+        }
       //  Debug.LogError("v: "+_spawnZoneList.selectedIndex);
     }
 
@@ -186,9 +189,11 @@ public class SpawnCreationEditor : Editor
         if (_spawns.Count>1) {
             refreshZoneList(_spawnZoneList.itemsSource.Count - 1);
             _spawns.RemoveAt(_currentEditSpawnZone);
+          //  Debug.LogError("removed: " + _spawnZoneList.selectedIndex);
           //  Debug.LogError("-: "+_spawnZoneList.selectedIndex);
-            setSpawnZoneByIndex(Math.Max(_spawns.Count-1, _spawnZoneList.selectedIndex), false);
-         //   _spawnZoneList.selectedIndex = _currentEditSpawnZone;
+            setSpawnZoneByIndex(_spawnZoneList.selectedIndex, false);
+            //   _spawnZoneList.selectedIndex = _currentEditSpawnZone;
+            
         }
       //  
     }
@@ -204,7 +209,7 @@ public class SpawnCreationEditor : Editor
     }
 
     private void setSpawnZoneByIndex(int index, bool isSaveCurrentSelection = true) {
-//        Debug.LogError("setSpawnZoneByIndex");
+        Debug.LogError("setSpawnZoneByIndex");
         if (isSaveCurrentSelection && _currentEditSpawnZone != -1) {
             saveCurrentSelection();
         }
@@ -216,13 +221,13 @@ public class SpawnCreationEditor : Editor
         for (i=0; i<l; i++) {
             _colors[i] = new Color(1, 1, 1, 1);
         }
-       // if (_currentEditSpawnZone != -1) {
+        if (_currentEditSpawnZone != -1) {
             l = _spawns[index].Count;
             for (i = 0; i < l; i++) {
                 setTriangleColor(_spawns[index][i], 0.5f);
                 _selectedTriangles[_spawns[index][i]] = true;
             }
-        //}
+        }
         _matForEdit.SetColorArray("_Colors", _colors);
     }
 
@@ -249,9 +254,23 @@ public class SpawnCreationEditor : Editor
         int l = _selectedTriangles.Length;
         for (int i=0; i<l; i++) {
             if (_selectedTriangles[i]) {
-                _spawns[_currentEditSpawnZone].Add(i); ;
+                _spawns[_currentEditSpawnZone].Add(i);
             }
         }
+    }
+
+
+
+    private void saveClickListener() {
+        saveCurrentSelection();
+        SpawnSO so = ScriptableObject.CreateInstance<SpawnSO>();
+        so.spawnTris = new string[_spawns.Count];
+        for (int i=0; i<_spawns.Count; i++) {
+            so.spawnTris[i] = string.Join(",", _spawns[i]);
+        }
+        string assetFolderPath = "Resources/Spawns";
+        EditorUtil.PrepareFolder(assetFolderPath);
+        AssetDatabase.CreateAsset(so, "Assets/" + assetFolderPath + "/" + _spawnSetNameTf.value + ".asset");
     }
 
 
@@ -278,7 +297,9 @@ public class SpawnCreationEditor : Editor
         _geomProcessor = new GeomProcessor(_mesh, _preData.trilinks, _preData.GetTav(), _targetObject.transform);
         _transform = _targetObject.GetComponent<Transform>();
         Renderer renderer = _targetObject.GetComponent<Renderer>();
-        _nativeMaterial = renderer.sharedMaterial;
+        if (_nativeMaterial == null) {
+            _nativeMaterial = renderer.sharedMaterial;
+        }
         renderer.sharedMaterial = _matForEdit = s_getRedoMaterial();
     }
 
@@ -325,6 +346,7 @@ public class SpawnCreationEditor : Editor
 
     private void fillAsSelected(int triangleIndex) {
         if (!_selectedTriangles[triangleIndex]) {
+            Debug.LogError("|||");
             setTriangleColor(triangleIndex, 0.25f);
             _matForEdit.SetColorArray("_Colors", _colors);
             _selectedTriangles[triangleIndex] = true;
@@ -333,6 +355,7 @@ public class SpawnCreationEditor : Editor
 
     private void fillAsNonselected(int triangleIndex) {
         if (_selectedTriangles[triangleIndex]) {
+            Debug.LogError("---");
             setTriangleColor(triangleIndex, 1);
             _matForEdit.SetColorArray("_Colors", _colors);
             _selectedTriangles[triangleIndex] = false;

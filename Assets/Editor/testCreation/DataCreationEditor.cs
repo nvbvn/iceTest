@@ -21,20 +21,6 @@ public class DataCreationEditor : Editor
     private Button _createPreDataBtn;
 
 
-    private SpawnSO _spawnSO;
-    private int _currentSpawnZoneI;
-    private List<int> _currentSpawnZone;
-    private Box _spawnEditBox;
-    private Box _spawnEditContentBox;
-    private ObjectField _spawnSOfield;
-    private Button _spawEditBtn;
-    private Button _addSpawZoneBtn;
-    private Button _removeSpawZoneBtn;
-
-    private ListView _spawnZoneList;
-    private List<string> items;
-
-    private TextField _spawnSetNameTf;
 
 
     private static Material s_redoMaterial = null;
@@ -63,99 +49,15 @@ public class DataCreationEditor : Editor
         customInspector.Add(_createPreDataBtn);
 
 
-
-        _spawnEditBox = new Box();
-        customInspector.Add(_spawnEditBox);
-        
-
-        _spawnSOfield = new ObjectField("Spawns source");
-        _spawnSOfield.objectType = typeof(SpawnSO);
-        _spawnSOfield.RegisterValueChangedCallback(spawnSrcChanged);
-        _spawnEditBox.Add(_spawnSOfield);
-
-        _spawnEditContentBox = new Box();
-        _spawnEditBox.Add(_spawnEditContentBox);
-
-        _spawEditBtn = new Button(createPreDataClickListener);
-        _spawEditBtn.text = START_SPAWN_EDIT;
-        _spawnEditContentBox.Add(_spawEditBtn);
-
-
-        items = new List<string>();
-        Func<VisualElement> makeItem = () => new Label();
-        Action<VisualElement, int> bindItem = (e, i) => (e as Label).text = items[i];
-        const int itemHeight = ITEM_HEIGHT;
-        _spawnZoneList = new ListView(items, itemHeight, makeItem, bindItem);
-        _spawnZoneList.selectionType = SelectionType.Single;
-
-        //_spawnZoneList.onItemChosen +=  obj => Debug.Log(obj);//onItemChosenHandler;//
-        _spawnZoneList.onSelectionChanged += onItemChosenHandler;//objects => Debug.Log("???"+objects);
-        _spawnEditContentBox.Add(_spawnZoneList);
-
-        Box arBtnBox = new Box();
-        _spawnEditContentBox.Add(arBtnBox);
-        arBtnBox.style.flexDirection = FlexDirection.Row;
-        arBtnBox.style.alignContent = Align.Center;
-
-        _addSpawZoneBtn = new Button(addSpawnZoneClickListener);
-        _addSpawZoneBtn.text = "Add Spawn Zone";
-        arBtnBox.Add(_addSpawZoneBtn);
-        _removeSpawZoneBtn = new Button(removeSpawnZoneClickListener);
-        _removeSpawZoneBtn.text = "Remove Spawn Zone";
-        arBtnBox.Add(_removeSpawZoneBtn);
-
-
-        _spawnSetNameTf = new TextField("Spawn Set Name");
-        _spawnEditContentBox.Add(_spawnSetNameTf);
-
-        
-
         checkMeshAvailabilityInTargetSurface(_targetSurfaceBind.value as GameObject);
 
         return customInspector;
     }
 
-    private void onItemChosenHandler(object obj) {
-    }
-
-
-    private void spawnSrcChanged(ChangeEvent<UnityEngine.Object> e) {
-        setSpawnSO(e.newValue as SpawnSO);
-    }
-
-    private void setSpawnSO(SpawnSO spawnSO) {
-        //Debug.LogError("setSpawnSO: "+spawnSO);
-        _spawnSO = spawnSO;
-        _spawnSetNameTf.value = _spawnSO==null? string.Empty : _spawnSO.name;
-        refreshZoneList(_spawnSO==null? 0 : _spawnSO.spawnTris.Length);
-        _spawnEditContentBox.SetEnabled(_spawnSO != null);
-    }
-
-    private void addSpawnZoneClickListener() {
-        refreshZoneList(_spawnZoneList.itemsSource.Count + 1);
-    }
-
-    private void removeSpawnZoneClickListener() {
-        refreshZoneList(_spawnZoneList.itemsSource.Count - 1);
-    }
-
-    private void refreshZoneList(int n) {
-        n = Math.Max(1, n);
-        _spawnZoneList.itemsSource.Clear();
-        int i;
-        for (i=0; i<n; i++) {
-            _spawnZoneList.itemsSource.Add((i+1).ToString());
-        }
-        _spawnZoneList.style.height = i * ITEM_HEIGHT;
-        _spawnZoneList.Refresh();
-    }
-
-
 
     private void targetSurfaceChanged(ChangeEvent<UnityEngine.Object> e) {
         //setSpawnSO(null);
         checkMeshAvailabilityInTargetSurface(e.newValue as GameObject);
-        
     }
 
     
@@ -169,11 +71,7 @@ public class DataCreationEditor : Editor
             }
         }
         _createPreDataBtn.SetEnabled(res);
-        _spawnEditBox.SetEnabled(res);
         _createPreDataBtn.text = res ? CREATE_PREDATA : MESH_UNAVAILABLE;
-
-        _spawnSOfield.value = null;
-        setSpawnSO(null);
     }
 
 
@@ -183,22 +81,9 @@ public class DataCreationEditor : Editor
         so.trisAroundVertex = GeomPreprocessor.CreateTrisAroundVertex(meshFilter.sharedMesh);
         so.trilinks = GeomPreprocessor.CreateTrilinks(meshFilter.sharedMesh);
         string assetFolderPath = "Resources/PreData";
-        prepareFolder(assetFolderPath);
+        EditorUtil.PrepareFolder(assetFolderPath);
         AssetDatabase.CreateAsset(so, "Assets/"+ assetFolderPath+"/"+ meshFilter.transform.root.name+"_preData.asset");
        // AssetDatabase.SaveAssets();
-    }
-
-    private void prepareFolder(string folderPath) {
-        string[] folderPathByStep = folderPath.Split('/');
-        string increasingPath = string.Empty;
-        string parentPath = "Assets";
-        for (int i=0; i<folderPathByStep.Length; i++) {
-            increasingPath += "/"+folderPathByStep[i];
-            if (!AssetDatabase.IsValidFolder("Assets"+increasingPath)) {
-                AssetDatabase.CreateFolder(parentPath, folderPathByStep[i]);
-            }
-            parentPath += "/"+folderPathByStep[i];
-        }
     }
 
 
