@@ -41,11 +41,11 @@ public class SpawnCreationEditor : Editor
 
     private void OnValidate()
     {
-      //  Debug.LogError("OnValidate");
+        Debug.LogError("OnValidate");
     }
 
     private void OnEnable() {
-       // Debug.LogError("OnEnable");
+        Debug.LogError("OnEnable");
     }
 
     public override VisualElement CreateInspectorGUI() {
@@ -215,13 +215,14 @@ public class SpawnCreationEditor : Editor
         }
         _currentEditSpawnZone = index;
         int l = _mesh.triangles.Length / 3;
-        _selectedTriangles = new bool[l];
+        _selectedTriangles = null;
         _colors = new Color[l];
         int i;
         for (i=0; i<l; i++) {
             _colors[i] = new Color(1, 1, 1, 1);
         }
         if (_currentEditSpawnZone != -1) {
+            _selectedTriangles = new bool[l];
             l = _spawns[index].Count;
             for (i = 0; i < l; i++) {
                 setTriangleColor(_spawns[index][i], 0.5f);
@@ -334,19 +335,18 @@ public class SpawnCreationEditor : Editor
     }
 
     private void fillingTriangle(int triangleIndex) { 
-//        if (_isRedoOn) {
+        if (_currentEditSpawnZone != -1) {
             if (Event.current.shift) {
                 fillAsSelected(triangleIndex);
             } else if (Event.current.control) {
                 fillAsNonselected(triangleIndex);
             }
             
-  //      }
+        }
     }
 
     private void fillAsSelected(int triangleIndex) {
         if (!_selectedTriangles[triangleIndex]) {
-            Debug.LogError("|||");
             setTriangleColor(triangleIndex, 0.25f);
             _matForEdit.SetColorArray("_Colors", _colors);
             _selectedTriangles[triangleIndex] = true;
@@ -355,7 +355,6 @@ public class SpawnCreationEditor : Editor
 
     private void fillAsNonselected(int triangleIndex) {
         if (_selectedTriangles[triangleIndex]) {
-            Debug.LogError("---");
             setTriangleColor(triangleIndex, 1);
             _matForEdit.SetColorArray("_Colors", _colors);
             _selectedTriangles[triangleIndex] = false;
